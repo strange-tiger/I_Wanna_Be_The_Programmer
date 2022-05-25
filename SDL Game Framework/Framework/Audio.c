@@ -15,10 +15,10 @@ bool Audio_Init(void)
 		return false;
 	}
 
-	if (0 != Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 4096))
-	{
-		return false;
-	}
+	//if (0 != Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 4096))
+	//{
+	//	return false;
+	//} 
 
 	Audio_SetVolume(0.5f);
 

@@ -2,6 +2,9 @@
 
 #include "Type.h"
 
+//게임 종료
+static bool s_isGameClose = false;
+
 typedef struct Scene
 {
 	void (*Init)(void);		// 씬을 초기화 하는 함수
@@ -16,7 +19,7 @@ typedef enum SceneType
 	SCENE_NULL,
 	SCENE_TITLE,
 	SCENE_MAIN,
-	SCENE_PAGE,
+	SCENE_CREDIT,
 	SCENE_MAX
 } ESceneType;
 
@@ -39,3 +42,10 @@ void Scene_SetNextScene(ESceneType scene);
 /// </summary>
 /// <param name=""></param>
 void Scene_Change(void);
+
+
+/// <summary>
+/// 씬 전환
+/// </summary>
+/// <returns>s_isGameClose 반환</returns>
+bool Scene_IsGameClose(void);

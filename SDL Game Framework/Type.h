@@ -12,3 +12,9 @@ typedef uint8_t			uint8;
 typedef uint16_t		uint16;
 typedef uint32_t		uint32;
 typedef uint64_t		uint64;
+
+//À§Ä¡ ÁÂÇ¥ °ª
+typedef struct tagPosition {
+	int32 X;	//À§Ä¡ ÁÂÇ¥ x
+	int32 Y;	//À§Ä¡ ÁÂÇ¥ y
+} Position;
