@@ -168,6 +168,7 @@ xcopy "$(ProjectDir)Asset\*.*" "$(TargetDir)Asset\" /E /Y</Command>
     <ClCompile Include="Game\Page.c" />
     <ClCompile Include="Game\PageManager.c" />
     <ClCompile Include="Main.c" />
+    <ClCompile Include="Player.c" />
     <ClCompile Include="stdafx.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
