@@ -36,6 +36,9 @@ typedef struct tagPlayer
 
 	//게임 종료 관련
 	bool				isPlayerDie; //플레이어 사망 했는지
+
+	//효과음
+	SoundEffect			DieSound;	//사망시 효과음
 } Player;
 
 //#### 기본 함수

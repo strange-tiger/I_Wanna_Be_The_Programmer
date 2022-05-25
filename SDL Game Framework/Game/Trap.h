@@ -1,36 +1,39 @@
-#pragma once
+ï»¿#pragma once
 
-#include "Type.h"
-#include "Framework.h"
 #include "stdafx.h"
+#include "Framework.h"
 
-//ÇÔÁ¤ Á¾·ù
-typedef enum Trap_Type {
+//í•¨ì • ì¢…ë¥˜
+enum Trap_Type {
 	TRAP_BASIC,
 	TRAP_FLYING,
 	TRAP_TRACK,
 	TRAP_SWITCH
-} Trap_Type;
+};
 
-//ÇÔÁ¤ ½ºÆ®·°Æ®(ÃßÈÄ ¼öÁ¤/Ãß°¡ ¿¹Á¤)
+//í•¨ì • ìŠ¤íŠ¸ëŸ­íŠ¸(ì¶”í›„ ìˆ˜ì •/ì¶”ê°€ ì˜ˆì •)
 typedef struct tagTrap
 {
-	//±âº»
-	Image		TrapImage;		//ÇÔÁ¤ ÀÌ¹ÌÁö
-	Position	TrapPosition;	//ÇÔÁ¤ À§Ä¡
-	int32		Width;		//ÇÔÁ¤ ÀÌ¹ÌÁöÀÇ °¡·Î °ª
-	int32		Height;		//ÇÔÁ¤ ÀÌ¹ÌÁöÀÇ ¼¼·Î °ª
+	//ê¸°ë³¸
+	Image		Image;			//í•¨ì • ì´ë¯¸ì§€
+	Position	Position;		//í•¨ì • ìœ„ì¹˜
+	int32		Width;			//í•¨ì • ì´ë¯¸ì§€ì˜ ê°€ë¡œ ê°’
+	int32		Height;			//í•¨ì • ì´ë¯¸ì§€ì˜ ì„¸ë¡œ ê°’
+	RECT		Rect;			//í•¨ì • ì¶©ëŒ ì²˜ë¦¬ ë²”ìœ„
 
-	//È¿°ú
-	Trap_Type	Type;	//ÇÔÁ¤ Å¸ÀÔ
-	
-	//³¯¾Æ¿À´Â/ÃßÀû ÇÔÁ¤¿¡¼­ ¾²ÀÏ ¸ñÇ¥ ÁöÁ¡
-	Position	TargetPosition;	//¸ñÇ¥ ÁöÁ¡ ÁÂÇ¥°ª
+	float		ActiveTime;		//í•¨ì • ì´ë²¤íŠ¸ ë¸íƒ€íƒ€ì„ ì ìš©
+	//íš¨ê³¼
+	enum Trap_Type	Type;		//í•¨ì • íƒ€ì…
 
-	//½ºÀ§Äª ÇÔÁ¤¿ë
-	int32		ImageAlpha;		//Åõ¸íÈ­
-	Image		Image2;			//(ÆÄ¶û/»¡°­) ¹Ù²Ü ÀÌ¹ÌÁö
+	//ë‚ ì•„ì˜¤ëŠ”/ì¶”ì  í•¨ì •ì—ì„œ ì“°ì¼ ëª©í‘œ ì§€ì 
+	Position	TargetPosition;	//ëª©í‘œ ì§€ì  ì¢Œí‘œê°’
 
+	//ìŠ¤ìœ„ì¹­ í•¨ì •ìš©
+	int32		ImageAlpha;		//íˆ¬ëª…í™”
+	Image		Image2;			//(íŒŒë‘/ë¹¨ê°•) ë°”ê¿€ ì´ë¯¸ì§€
+
+	//íš¨ê³¼ìŒ
+	SoundEffect	effectSound;	//ë‚ ì•„ì˜¤ëŠ” ë“±ì˜ íš¨ê³¼ì—ì„œ ë‚˜ì˜¤ëŠ” íš¨ê³¼ìŒ
 } Trap;
 
-//####Ãß°¡ ÇÔ¼ö
+//####ì¶”ê°€ í•¨ìˆ˜

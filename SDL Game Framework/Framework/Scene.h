@@ -1,13 +1,16 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Type.h"
 
+//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+static bool s_isGameClose = false;
+
 typedef struct Scene
 {
-	void (*Init)(void);		// ¾ÀÀ» ÃÊ±âÈ­ ÇÏ´Â ÇÔ¼ö
-	void (*Update)(void);	// ¾÷µ¥ÀÌÆ®
-	void (*Render)(void);	// ·»´õ
-	void (*Release)(void);	// ¾À¿¡¼­ »ç¿ëÇÑ ÀÚ¿øÀ» Á¤¸®
+	void (*Init)(void);		// ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­ ï¿½Ï´ï¿½ ï¿½Ô¼ï¿½
+	void (*Update)(void);	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
+	void (*Render)(void);	// ï¿½ï¿½ï¿½ï¿½
+	void (*Release)(void);	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	void* Data;
 } Scene;
 
@@ -16,26 +19,33 @@ typedef enum SceneType
 	SCENE_NULL,
 	SCENE_TITLE,
 	SCENE_MAIN,
-	SCENE_PAGE,
+	SCENE_CREDIT,
 	SCENE_MAX
 } ESceneType;
 
 extern Scene g_Scene;
 
 /// <summary>
-/// ´ÙÀ½ ¾ÀÀ¸·Î ÀüÈ¯µÉ ¿¹Á¤ÀÎ°¡?
+/// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Î°ï¿½?
 /// </summary>
-/// <returns>´ÙÀ½ ¾ÀÀ¸·Î ÀüÈ¯µÉ ¿¹Á¤ÀÌ¸é true, ¾Æ´Ï¸é false</returns>
+/// <returns>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½ true, ï¿½Æ´Ï¸ï¿½ false</returns>
 bool Scene_IsSetNextScene(void);
 
 /// <summary>
-/// ´ÙÀ½ ¾ÀÀ» ÁöÁ¤ÇÑ´Ù.
+/// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 /// </summary>
-/// <param name="scene">¾À</param>
+/// <param name="scene">ï¿½ï¿½</param>
 void Scene_SetNextScene(ESceneType scene);
 
 /// <summary>
-/// ¾À ÀüÈ¯
+/// ï¿½ï¿½ ï¿½ï¿½È¯
 /// </summary>
 /// <param name=""></param>
 void Scene_Change(void);
+
+
+/// <summary>
+/// ï¿½ï¿½ ï¿½ï¿½È¯
+/// </summary>
+/// <returns>s_isGameClose ï¿½ï¿½È¯</returns>
+bool Scene_IsGameClose(void);
