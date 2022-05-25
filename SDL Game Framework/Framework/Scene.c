@@ -65,6 +65,12 @@ typedef struct TitleSceneData
 	Image	EnemyHPgaugeValue;
 	int32	EnemyHPgauge_X;
 	int32	EnemyHPgauge_Y;
+	int32   Enemymove_X;
+	int32   Enemysmoothmove_X;
+	int32   Enemymove_Y;
+	int32   Enemysmoothmove_Y;
+	float   Elasptime;
+	float   Elasptime2;
 
 
 } TitleSceneData;
@@ -87,16 +93,17 @@ void init_title(void)
 	Image_LoadImage(&data->EnemyHPgaugeBack, "EnemyHPgaugeBack.png");
 	Image_LoadImage(&data->EnemyHPgaugeValue, "EnemyHPgaugeValue.png");
 	Image_LoadImage(&data->Block, "Block.png");
-	data->Character_X = 100;
-	data->Character_Y = 430;
+	data->Character_X = 10;
+	data->Character_Y = 540;
 	data->Enemy_X = 700;
 	data->Enemy_Y = 300;
-	data->Block_X = 500;
-	data->Block_Y = 430;
+	data->Block_X = 5000;
+	data->Block_Y = 3000;
 }
 
 float JumpTime = 0.0f;			//점프 구현방식 : 위 화살표 누르면 일정 시간동안 Y좌표 --;
 int32 Jump = 0;					//현재 케릭터가 점프중인지 표시하는 변수, 후에 모어점핑 구현을 위한 변수로 사용 가능.
+int32 Jumpcount = 0;
 float AttackTime = 0.0f;		//공격 이펙트 표현을 위해 델타타임 누적받을 변수
 int32 Attack = 0;				
 int32 Character_Direction = 1;	//케릭터 방향 표현을 위해 임시로 썼음.(Left / Right)
@@ -105,14 +112,26 @@ int32 EnemyHP = 100;			//몬스터 HP 초기설정.
 void update_title(void)
 {
 	TitleSceneData* data = (TitleSceneData*)g_Scene.Data;
-	data->EnemyHPgauge_X = data->Enemy_X;
-	data->EnemyHPgauge_Y = data->Enemy_Y + 350;
+	data->Elasptime += Timer_GetDeltaTime();
+	data->Elasptime2 += Timer_GetDeltaTime();
+	if (data->Elasptime > 1.0)
+	{
+		if (data->Elasptime2 > 0.01)
+		{
+			data->Enemysmoothmove_X = data->Enemy_X + 1;
+		}
+		data->Enemymove_X = Random_GetFNumberFromRange(100,250);
+		data->Enemymove_Y = Random_GetFNumberFromRange(-200, 0);
+		data->Elasptime = 0;
+	}
+	data->EnemyHPgauge_X = data->Enemy_X + data->Enemymove_X;
+	data->EnemyHPgauge_Y = data->Enemy_Y + 350 + data->Enemymove_Y;
 	data->EnemyHPgaugeValue.ScaleX = (float)EnemyHP / 100;		//스케일조정으로 몬스터 체력바 조정
 
 	data->Block_Polygon_X = data->Block_X + 80;
 	data->Block_Polygon_Y = data->Block_Y + 80;					//폴리곤 개념으로 블럭의 크기를 설정하려 했으나 아무리 생각해도 내가 멍청이인것같음
-	data->Character_Polygon_X = data->Character_X + 100;
-	data->Character_Polygon_Y = data->Character_Y + 100;
+	data->Character_Polygon_X = data->Character_X + 10;
+	data->Character_Polygon_Y = data->Character_Y + 10;
 
 
 	/*  벽 없이 몬스터만 있을때 쓰던 케릭터 이동 코드
@@ -133,7 +152,11 @@ void update_title(void)
 	//케릭터의 좌표가 블럭 폴리곤 밖에 있을때만 이동 가능. X축만 구현해 놓은 상황이다 보니 사실상 화면 전체에 투명 벽이 하나 있는 모양이 됐음.
 	if (Input_GetKeyDown(VK_UP))
 	{
-		Jump = 1;
+		Jumpcount++;
+		if (Jumpcount < 3)
+		{
+			Jump = 1;
+		}
 	}
 	if(Input_GetKey(VK_LEFT))
 	{
@@ -141,6 +164,7 @@ void update_title(void)
 		{
 			data->Character_X -= 15;
 			Character_Direction = 0;
+			Image_LoadImage(&data->Character, "characterLeft.png");
 		}
 	}
 	
@@ -149,7 +173,8 @@ void update_title(void)
 		if (data->Character_Polygon_X <= data->Block_X || data->Block_Polygon_X - 15 <= data->Character_X)
 		{
 			data->Character_X += 15;
-				Character_Direction = 0;
+				Character_Direction = 1;
+				Image_LoadImage(&data->Character, "character.png");
 		}
 	}
 
@@ -157,21 +182,26 @@ void update_title(void)
 	if (Jump == 1)
 	{
 		JumpTime += Timer_GetDeltaTime();
-		if (JumpTime <= 0.1)
+		if (JumpTime <= 0.5)
 		{
-			data->Character_Y -= 30;
+			data->Character_Y -= 10;
 
 		}
-		if (JumpTime > 0.1)
+		if (JumpTime > 0.5)
 		{
 			JumpTime = 0.0f;
 			Jump = 0;
 		}
 	}
 
-	if (data->Character_Y < 430 && Jump == 0)
+	if (data->Character_Y == 540)
 	{
-		data->Character_Y += 30;
+		Jumpcount = 0;
+	}
+
+	if (data->Character_Y < 540 && Jump == 0)
+	{
+		data->Character_Y += 10;
 	}
 
 	if (Input_GetKey(VK_DOWN))
@@ -195,9 +225,9 @@ void update_title(void)
 	if (Input_GetKeyDown(VK_SPACE))
 	{
 		Attack = 1;
-		if (data->Enemy_X - data->Character_X < 100)
+		if (data->Enemy_X + data->Enemymove_X - data->Character_X < 100)
 		{
-			if (data->Enemy_Y - data->Character_Y < 100)
+			if (data->Enemy_Y + data->Enemymove_Y - data->Character_Y < 100)
 			{
 			
 				EnemyHP -= 10;
@@ -246,13 +276,15 @@ void render_title(void)
 		//몬스터의 HP가 0이면 출력 안행
 		if (EnemyHP > 0)
 		{
-			Renderer_DrawImage(&data->Enemy, data->Enemy_X, data->Enemy_Y);
+			
+			Renderer_DrawImage(&data->Enemy, data->Enemy_X + data->Enemymove_X, data->Enemy_Y + data->Enemymove_Y);
+			Renderer_DrawImage(&data->EnemyHPgaugeBack, data->EnemyHPgauge_X, data->EnemyHPgauge_Y);
+			Renderer_DrawImage(&data->EnemyHPgaugeValue, data->EnemyHPgauge_X, data->EnemyHPgauge_Y);
+			
 		}
 		Renderer_DrawImage(&data->Effect, data->Effect_X, data->Effect_Y);
 
 		Renderer_DrawImage(&data->Block, data->Block_X, data->Block_Y);
-		Renderer_DrawImage(&data->EnemyHPgaugeBack, data->EnemyHPgauge_X, data->EnemyHPgauge_Y);
-		Renderer_DrawImage(&data->EnemyHPgaugeValue, data->EnemyHPgauge_X, data->EnemyHPgauge_Y);
 		//이미지 렌더링을 위한 코오오오드
 }
 
@@ -273,7 +305,7 @@ void release_title(void)
 }
 #pragma endregion
 
-#pragma region MainScene
+   #pragma region MainScene
 const wchar_t* str2[] = {
 	L"여기서는 사운드와 이미지 블렌딩에 대해서 알아봅시다.",
 	L"화살표키로 이미지를 이동시킬 수 있습니다.",
