@@ -11,6 +11,14 @@ void Map_Init(Map* map, int32 StageNum)
 	Audio_LoadMusic(&map->BGM, "");
 	Audio_LoadMusic(&map->DieBGM, "");
 
+	map->StartPoint.X = 0;
+	map->StartPoint.Y = 0;
+
+	map->DestinationPoint.X = 0;
+	map->DestinationPoint.Y = 0;
+
+	map->ActiveTime = 0.0f;
+
 	for (int i = 0; i < MAX_PLATFORM_COUNT; i++)
 	{
 		Image_LoadImage(&map->PlatformList[i].Image, "");			// Platform 이미지 로드 // csv 파싱 값
@@ -71,6 +79,9 @@ void Map_Init(Map* map, int32 StageNum)
 
 void Map_Update(Map* map)
 {
+	map->ActiveTime += Timer_GetDeltaTime();
+
+
 
 }
 
@@ -105,4 +116,48 @@ void Map_Release(Map* map)
 		Image_FreeImage(&map->TrapList[i].Image);
 		Audio_FreeSoundEffect(&map->TrapList[i].effectSound);
 	}
+}
+
+bool Map_DetectIsGround(Map* map)
+{
+
+}
+
+void Map_PlatformHorizontalMove(Map* map, int32 platformNum)
+{
+	bool direction = false;
+	if (map->ActiveTime >= PLATFORM_MOVE_CYCLE)
+	{
+		if (!direction)
+		{
+			map->PlatformList[platformNum].Position.X += PLATFORM_MOVE_SPEED;
+		}
+		else if (direction)
+		{
+			map->PlatformList[platformNum].Position.X -= PLATFORM_MOVE_SPEED;
+		}
+	}
+}
+
+void Map_PlatformVerticalMove(Map* map, int32 platformNum)
+{
+	bool direction = false;
+	if (map->ActiveTime >= PLATFORM_MOVE_CYCLE)
+	{
+		if (!direction)
+		{
+			map->PlatformList[platformNum].Position.Y += PLATFORM_MOVE_SPEED;
+		}
+		else if (direction)
+		{
+			map->PlatformList[platformNum].Position.Y -= PLATFORM_MOVE_SPEED;
+		}
+	}
+}
+
+int32* Map_DetectSavePoint(Map* map)
+{
+	int p[2];
+
+	return p;
 }

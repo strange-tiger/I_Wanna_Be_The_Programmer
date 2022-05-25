@@ -2,6 +2,10 @@
 
 #include "stdafx.h"
 #include "Framework.h"
+#include "Player.h"
+#include "Map.h"
+
+#define TRAP_SWITCH_CYCLE 1.0f
 
 //함정 종류
 enum Trap_Type {
@@ -21,9 +25,12 @@ typedef struct tagTrap
 	int32		Height;			//함정 이미지의 세로 값
 	RECT		Rect;			//함정 충돌 처리 범위
 
-	float		ActiveTime;		//함정 이벤트 델타타임 적용
 	//효과
 	enum Trap_Type	Type;		//함정 타입
+	bool		Active;
+	float		ActiveTime;
+	int32		Speed;
+
 
 	//날아오는/추적 함정에서 쓰일 목표 지점
 	Position	TargetPosition;	//목표 지점 좌표값
@@ -37,3 +44,18 @@ typedef struct tagTrap
 } Trap;
 
 //####추가 함수
+
+/// <summary>
+/// 함정을 TargetPosition까지 움직인다.
+/// </summary>
+void Trap_TrapMove(Trap* trap);
+
+/// <summary>
+/// 목표물의 위치 TargetPosition 값을 받는다.
+/// </summary>
+void Trap_GetTargetPosition(Trap* trap, Player* player, int32 x, int32 y);
+
+/// <summary>
+/// 스위치 함정을 주기에 따라 깜박인다.
+/// </summary>
+void Trap_TrapSwitch(Trap* trap);
