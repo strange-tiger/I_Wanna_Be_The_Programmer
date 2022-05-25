@@ -26,6 +26,10 @@ void init_title(void)
 	memset(g_Scene.Data, 0, sizeof(TitleSceneData));
 
 	TitleSceneData* data = (TitleSceneData*)g_Scene.Data;
+	
+	// 타이틀에서 csv데이터 가져온다.
+	CsvFile csvFile = { 0 }; // TODO : Csv.h의 MAXIMUM_ROW 수정
+	CreateCsvFile(&csvFile, "CsvTest.csv"); // TODO : csv 파일이름 수정
 
 	Text_CreateText(&data->mainText, "d2coding.ttf", 40,L"이거슨 타이틀", wcslen(L"이거슨 타이틀"));
 	Text_CreateText(&data->NextText, "d2coding.ttf", 40,L"Space 눌러 다음 씬으로", wcslen(L"Space 눌러 다음 씬으로"));
@@ -33,6 +37,8 @@ void init_title(void)
 
 void update_title(void)
 {
+	TitleSceneData* data = (TitleSceneData*)g_Scene.Data;
+
 	if (Input_GetKeyDown(VK_SPACE))
 	{
 		Scene_SetNextScene(SCENE_MAIN);
@@ -41,22 +47,16 @@ void update_title(void)
 
 void render_title(void)
 {
-	g_Scene.Data = malloc(sizeof(TitleSceneData));
-	memset(g_Scene.Data, 0, sizeof(TitleSceneData));
-
 	TitleSceneData* data = (TitleSceneData*)g_Scene.Data;
 
 	SDL_Color bgColor = { 0, 0, 0, 255 };
 	SDL_Color textColor = { 255, 255, 255, 255 };
-	Renderer_DrawTextShaded(&data->mainText, 0, 0, bgColor, textColor);
-	Renderer_DrawTextShaded(&data->NextText, 0, 0, bgColor, textColor);
+	Renderer_DrawTextShaded(&data->mainText, 10, 10, bgColor, textColor);
+	Renderer_DrawTextShaded(&data->NextText, 100, 100, bgColor, textColor);
 }
 
 void release_title(void)
 {
-	g_Scene.Data = malloc(sizeof(TitleSceneData));
-	memset(g_Scene.Data, 0, sizeof(TitleSceneData));
-
 	TitleSceneData* data = (TitleSceneData*)g_Scene.Data;
 
 	Text_FreeText(&data->mainText);
@@ -89,18 +89,25 @@ void init_main(void)
 
 	MainSceneData* data = (MainSceneData*)g_Scene.Data;
 
+	// 로드
+	
+	// 플레이어 데이터가 있으면 가져온다.
+	// 플레이어 데이터가 없으면 초기값으로 설정한다.
+
+	// 플레이어 데이터에 해당하는 각 데이터들을 불러온다.
 }
 
 void update_main(void)
 {
 	MainSceneData* data = (MainSceneData*)g_Scene.Data;
 
+	// 플레이어 조작
+
 }
 
 void render_main(void)
 {
 	MainSceneData* data = (MainSceneData*)g_Scene.Data;
-
 }
 
 void release_main(void)
