@@ -82,7 +82,6 @@ void Map_Update(Map* map)
 	map->ActiveTime += Timer_GetDeltaTime();
 
 
-
 }
 
 void Map_Render(Map* map)
@@ -118,46 +117,73 @@ void Map_Release(Map* map)
 	}
 }
 
-bool Map_DetectIsGround(Map* map)
+bool Map_DetectIsGround(Map* map, Player* player)
 {
-
-}
-
-void Map_PlatformHorizontalMove(Map* map, int32 platformNum)
-{
-	bool direction = false;
-	if (map->ActiveTime >= PLATFORM_MOVE_CYCLE)
+	RECT tempRect;
+	for (int i; i < MAX_PLATFORM_COUNT; i++)
 	{
-		if (!direction)
+		if (player->Rect.bottom < map->PlatformList[i].Rect.top)
 		{
-			map->PlatformList[platformNum].Position.X += PLATFORM_MOVE_SPEED;
+			break;
 		}
-		else if (direction)
+		if (IntersectRect(&tempRect, &player->Rect, &map->PlatformList[i].Rect))
 		{
-			map->PlatformList[platformNum].Position.X -= PLATFORM_MOVE_SPEED;
+
 		}
 	}
 }
 
-void Map_PlatformVerticalMove(Map* map, int32 platformNum)
+void Map_PlatformHorizontalMove(Map* map, Platform* platform)
 {
-	bool direction = false;
 	if (map->ActiveTime >= PLATFORM_MOVE_CYCLE)
 	{
-		if (!direction)
+		if (!platform->Direction)
 		{
-			map->PlatformList[platformNum].Position.Y += PLATFORM_MOVE_SPEED;
+			platform->Position.X += PLATFORM_MOVE_SPEED;
 		}
-		else if (direction)
+		else if (platform->Direction)
 		{
-			map->PlatformList[platformNum].Position.Y -= PLATFORM_MOVE_SPEED;
+			platform->Position.X -= PLATFORM_MOVE_SPEED;
 		}
+		map->ActiveTime = 0.0f;
+		platform->Direction = !platform->Direction;
 	}
 }
 
-int32* Map_DetectSavePoint(Map* map)
+void Map_PlatformVerticalMove(Map* map, Platform* platform)
+{
+	if (map->ActiveTime >= PLATFORM_MOVE_CYCLE)
+	{
+		if (!platform->Direction)
+		{
+			platform->Position.Y += PLATFORM_MOVE_SPEED;
+		}
+		else if (platform->Direction)
+		{
+			platform->Position.Y -= PLATFORM_MOVE_SPEED;
+		}
+		map->ActiveTime = 0.0f;
+		platform->Direction = !platform->Direction;
+	}
+}
+
+int32* Map_DetectSavePoint(Map* map, Player* player)
 {
 	int p[2];
+
+	for (int i = 0; i < MAX_SAVE_POINT_COUNT; i++)
+	{
+		if (map->SavePoint[i].Active == false)
+		{
+			if (1) // 충돌 처리? 
+			{
+				map->SavePoint[i].Active = !map->SavePoint[i].Active;
+
+				p[0] = map->SavePoint[i].Platform.Position.X;
+				p[1] = map->SavePoint[i].Platform.Position.Y;
+			}
+		}
+	}
 
 	return p;
 }

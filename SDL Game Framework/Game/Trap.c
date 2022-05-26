@@ -1,9 +1,11 @@
 #include "Trap.h"
 
-void Trap_TrapMove(Trap* trap)
+void Trap_TrapMove(Trap* trap, Player* player, int32 x, int32 y)
 {
 	if (trap->Type == TRAP_FLYING || trap->Type == TRAP_TRACK)	// 함정 종류 : 날아오는, 따라오는
 	{
+		Trap_GetTargetPosition(trap, player, x, y);
+
 		if (trap->Active) // 발동 조건
 		{
 			int32 trapX = trap->Position.X;
