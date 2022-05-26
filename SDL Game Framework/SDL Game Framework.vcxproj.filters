@@ -49,6 +49,15 @@
     <ClCompile Include="Game\Player.c">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Map.c">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Trap.c">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="GameManager.c">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -95,6 +104,9 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Game\Trap.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameManager.h">
       <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>
