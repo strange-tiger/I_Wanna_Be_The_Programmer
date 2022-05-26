@@ -40,10 +40,10 @@ void Map_Init(Map* map, int32 StageNum)
 		int32 platformHeight = map->PlatformList[i].Height;
 
 		// Platform Rect 구성
-		map->PlatformList[i].Rect.left		= platformX - platformWidth / 2;
-		map->PlatformList[i].Rect.top		= platformY - platformHeight / 2;
-		map->PlatformList[i].Rect.right		= platformX + platformWidth / 2;
-		map->PlatformList[i].Rect.bottom	= platformY + platformHeight / 2;
+		map->PlatformList[i].Rect.left		= platformX;
+		map->PlatformList[i].Rect.top		= platformY;
+		map->PlatformList[i].Rect.right		= platformX + platformWidth;
+		map->PlatformList[i].Rect.bottom	= platformY + platformHeight;
 	}
 
 	for (int i = 0; i < MAX_TRAP_COUNT; i++)
@@ -65,10 +65,10 @@ void Map_Init(Map* map, int32 StageNum)
 		int32 trapHeight = map->TrapList[i].Height;
 
 		// Trap Rect 구성
-		map->TrapList[i].Rect.left			= trapX - trapWidth / 2;
-		map->TrapList[i].Rect.top			= trapY - trapHeight / 2;
-		map->TrapList[i].Rect.right			= trapX + trapWidth / 2;
-		map->TrapList[i].Rect.bottom		= trapY + trapHeight / 2;
+		map->TrapList[i].Rect.left			= trapX;
+		map->TrapList[i].Rect.top			= trapY;
+		map->TrapList[i].Rect.right			= trapX + trapWidth;
+		map->TrapList[i].Rect.bottom		= trapY + trapHeight;
 
 		map->TrapList[i].Type = TRAP_BASIC;							// Trap 타입 초기화 // csv 파싱 값
 
@@ -102,10 +102,10 @@ void Map_Init(Map* map, int32 StageNum)
 		int32 platformHeight = map->SavePointList[i].Platform.Height;
 
 		// Platform Rect 구성
-		map->SavePointList[i].Platform.Rect.left = platformX - platformWidth / 2;
-		map->SavePointList[i].Platform.Rect.top = platformY - platformHeight / 2;
-		map->SavePointList[i].Platform.Rect.right = platformX + platformWidth / 2;
-		map->SavePointList[i].Platform.Rect.bottom = platformY + platformHeight / 2;
+		map->SavePointList[i].Platform.Rect.left = platformX;
+		map->SavePointList[i].Platform.Rect.top = platformY;
+		map->SavePointList[i].Platform.Rect.right = platformX + platformWidth;
+		map->SavePointList[i].Platform.Rect.bottom = platformY + platformHeight;
 
 		map->SavePointList[i].Active = false;		//SavePoint 활성도 초기화
 	}
