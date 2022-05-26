@@ -46,6 +46,12 @@
     <ClCompile Include="Framework\Csv.c">
       <Filter>Framework</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Animation.c">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Player.c">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -92,6 +98,9 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Game\Trap.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Animation.h">
       <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>

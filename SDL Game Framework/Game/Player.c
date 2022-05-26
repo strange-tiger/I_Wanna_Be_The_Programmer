@@ -1,10 +1,22 @@
+#include "stdafx.h"
 #include "Player.h"
 #include "Framework.h"
 
 //#### 기본 함수
 void Player_Init(Player* player) 
 {
+	player->state = PLAYER_IDLE;
+	player->direction = PLAYER_RIGHT;
 
+	player->isJumping = false;
+	player->currentJumpingCount = PLAYER_MAX_JUMPING_COUNT;
+
+	player->isPlayerDie = false;
+	player->elapsedTime = 0.0f;
+
+	//player->dieSound = 
+
+	Animation_Init(&player->animation);
 }
 
 void Player_Update(Player* player) 
@@ -49,7 +61,7 @@ void Player_Move(Player* player, Platform* platforms)
 		if (Input_GetKey(VK_LEFT))
 		{
 			// 걷는 상태로 전환, 방향 결정
-			player->state = PLAYER_WALKING;
+			player->state = PLAYER_MOVE;
 			player->direction = PLAYER_LEFT;
 
 			//이동 연산
@@ -59,7 +71,7 @@ void Player_Move(Player* player, Platform* platforms)
 		if (Input_GetKey(VK_RIGHT))
 		{
 			// 걷는 상태로 전환, 방향 결정
-			player->state = PLAYER_WALKING;
+			player->state = PLAYER_MOVE;
 			player->direction = PLAYER_RIGHT;
 
 			//이동 연산
@@ -87,7 +99,7 @@ bool Player_IsHitTrap(Player* player, Trap* traps)
 
 void Player_StayStill(Player* player)
 {
-	if (!player->isJumpting && player->state == PLAYER_WALKING) 
+	if (!player->isJumping && player->state == PLAYER_MOVE)
 	{
 		player->elapsedTime += Timer_GetDeltaTime();
 
@@ -98,7 +110,7 @@ void Player_StayStill(Player* player)
 		}
 	}
 
-	player->state = PLAYER_WALKING;
+	player->state = PLAYER_MOVE;
 }
 
 void Player_Die(Player* player)

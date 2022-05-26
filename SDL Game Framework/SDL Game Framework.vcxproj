@@ -164,6 +164,8 @@ xcopy "$(ProjectDir)Asset\*.*" "$(TargetDir)Asset\" /E /Y</Command>
     <ClCompile Include="Framework\Text.c" />
     <ClCompile Include="Framework\Timer.c" />
     <ClCompile Include="Framework\Window.c" />
+    <ClCompile Include="Game\Animation.c" />
+    <ClCompile Include="Game\Player.c" />
     <ClCompile Include="Main.c" />
     <ClCompile Include="stdafx.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -185,6 +187,7 @@ xcopy "$(ProjectDir)Asset\*.*" "$(TargetDir)Asset\" /E /Y</Command>
     <ClInclude Include="Framework\Text.h" />
     <ClInclude Include="Framework\Timer.h" />
     <ClInclude Include="Framework\Window.h" />
+    <ClInclude Include="Game\Animation.h" />
     <ClInclude Include="Game\Map.h" />
     <ClInclude Include="Game\Player.h" />
     <ClInclude Include="Game\Trap.h" />

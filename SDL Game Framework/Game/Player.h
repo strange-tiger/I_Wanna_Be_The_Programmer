@@ -15,9 +15,9 @@
 //플레이어 이동 상태
 enum Player_State 
 {
-	PLAYER_IDLE = PLAYER_IDE_PIC_COUNT,
-	PLAYER_Move = PLAYER_MOVE_PIC_COUNT,
-	PLAYER_DIE = PLAYER_DEATH_PIC_COUNT
+	PLAYER_IDLE = 2,
+	PLAYER_MOVE = 8,
+	PLAYER_DIE = 9
 };
 
 //플래이어 이동 방향
@@ -27,7 +27,7 @@ enum Player_Direction
 	PLAYER_RIGHT
 };
 
-typedef struct tagPlayer 
+typedef struct Player 
 {
 
 	//이동 관련
