@@ -70,6 +70,9 @@ void release_title(void)
 typedef struct MainSceneData
 {
 	int32	temp;
+	// 플레이어 데이터
+	// 맵 데이터
+
 } MainSceneData;
 
 void logOnFinished(void)
@@ -89,8 +92,26 @@ void init_main(void)
 
 	MainSceneData* data = (MainSceneData*)g_Scene.Data;
 
-	// 로드
+	// 데이터 로드
 	
+	// 플레이어,맵 데이터 이니셜라이즈
+	
+	FILE* savefp;
+	if (savefp = fopen("saveData.txt", "rt"))
+	{
+		LogInfo("saveData.txt : true");
+		// 세이브 파일 로드
+		fclose(savefp);
+	}
+	else
+	{
+		LogInfo("saveData.txt : false");
+		// 세이브 파일 생성
+		savefp = fopen("saveData.txt", "w");
+		fclose(savefp);
+	}
+
+
 	// 플레이어 데이터가 있으면 가져온다.
 	// 플레이어 데이터가 없으면 초기값으로 설정한다.
 
@@ -101,13 +122,21 @@ void update_main(void)
 {
 	MainSceneData* data = (MainSceneData*)g_Scene.Data;
 
-	// 플레이어 조작
+	// 플레이어 조작은 pdata에서 해주나? 아니지 조작으로 맵이 스위칭되는 애도 있는데
+	 
+	// 플레이어 데이터 업데이트
+	// 맵의 시작 위치에 플레이어를 위치시킨다.
+	// 
 
+	// [ 맵 데이터 ]
+	// 
 }
 
 void render_main(void)
 {
 	MainSceneData* data = (MainSceneData*)g_Scene.Data;
+
+
 }
 
 void release_main(void)
