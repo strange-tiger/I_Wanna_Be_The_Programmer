@@ -23,7 +23,8 @@ typedef struct tagPlatform
 	int32		Height;				//플랫폼 이미지의 세로 값
 	RECT		Rect;				//플랫폼 충돌 처리 범위
 
-	bool		Direction			//플랫폼 이동 방향
+	bool		Direction;			//플랫폼 이동 방향
+	int32		Move;				//플랫폼이 움직이는가 : 0: 아니오 1: 가로 2: 세로
 } Platform;
 
 typedef struct SavePoint
@@ -73,7 +74,7 @@ void Map_Release(Map* map);
 /// <returns>
 /// 플레이어가 플랫폼 좌우로 걸치는 범위 안, 플랫폼 바로 위에 있다면 true, 아니면 false
 /// </returns>
-bool Platform_DetectIsGround(Map* map);
+bool Platform_DetectIsGround(Platform* platform, Player* player);
 
 /// <summary>
 /// 플랫폼을 주기에 따라 가로로 반복하여 움직인다.

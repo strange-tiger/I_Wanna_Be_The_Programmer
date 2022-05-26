@@ -12,51 +12,55 @@ void Trap_TrapMove(Trap* trap, Player* player, int32 x, int32 y)
 			int32 trapY = trap->Position.Y;
 			int32 targetX = trap->TargetPosition.X;
 			int32 targetY = trap->TargetPosition.Y;
-			
-			if (trapX > targetX)
-			{
-				if (trapX - trap->Speed > targetX)
-				{
-					trap->Position.X -= trap->Speed;
-				}
-				else
-				{
-					trap->Position.X = targetX;
-				}
-			}
-			else if (trapX < targetX)
-			{
-				if (trapX + trap->Speed < targetX)
-				{
-					trap->Position.X += trap->Speed;
-				}
-				else
-				{
-					trap->Position.X = targetX;
-				}
-			}
 
-			if (trapY > targetY)
+			if (trap->ActiveTime >= TRAP_SWITCH_CYCLE)
 			{
-				if (trapY - trap->Speed > targetY)
+				if (trapX > targetX)
 				{
-					trap->Position.Y -= trap->Speed;
+					if (trapX - trap->Speed > targetX)
+					{
+						trap->Position.X -= trap->Speed;
+					}
+					else
+					{
+						trap->Position.X = targetX;
+					}
 				}
-				else
+				else if (trapX < targetX)
 				{
-					trap->Position.Y = targetY;
+					if (trapX + trap->Speed < targetX)
+					{
+						trap->Position.X += trap->Speed;
+					}
+					else
+					{
+						trap->Position.X = targetX;
+					}
 				}
-			}
-			else if (trapY < targetY)
-			{
-				if (trapY + trap->Speed < targetY)
+
+				if (trapY > targetY)
 				{
-					trap->Position.Y += trap->Speed;
+					if (trapY - trap->Speed > targetY)
+					{
+						trap->Position.Y -= trap->Speed;
+					}
+					else
+					{
+						trap->Position.Y = targetY;
+					}
 				}
-				else
+				else if (trapY < targetY)
 				{
-					trap->Position.Y = targetY;
+					if (trapY + trap->Speed < targetY)
+					{
+						trap->Position.Y += trap->Speed;
+					}
+					else
+					{
+						trap->Position.Y = targetY;
+					}
 				}
+				trap->ActiveTime = 0.0f;
 			}
 		}
 	}

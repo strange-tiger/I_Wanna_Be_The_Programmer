@@ -106,10 +106,49 @@ void Map_Init(Map* map, int32 StageNum)
 	}
 }
 
-void Map_Update(Map* map)
+void Map_Update(Map* map, Player* player)	// player 정보도 들어가는 것이 맞나..?
 {
 	map->ActiveTime += Timer_GetDeltaTime();
+	for (int32 i = 0; i < MAX_TRAP_COUNT; i++)
+	{
+		map->TrapList[i].ActiveTime = map->ActiveTime;
+	}
 
+	for (int32 i = 0; i < MAX_PLATFORM_COUNT; i++)
+	{
+		switch (map->PlatformList[i].Move)
+		{
+		case 0:
+			break;
+		case 1:
+			Platform_PlatformHorizontalMove(map, &map->PlatformList[i]);
+			break;
+		case 2:
+			Platform_PlatformVerticalMove(map, &map->PlatformList[i]);
+			break;
+		default:
+			break;
+		}
+	}
+
+	for (int32 i = 0; i < MAX_TRAP_COUNT; i++)
+	{
+		Trap_TrapMove(&map->TrapList[i], player, x, y);		//x, y는 csv로 파싱
+		Trap_TrapSwitch(&map->TrapList[i]);
+	}
+
+	if (map->ActiveTime > PLATFORM_MOVE_CYCLE)
+	{
+		map->ActiveTime = 0.0f;
+	}
+
+	Map_DetectSavePoint(map, player);
+
+	for (int32 i = 0; i < MAX_PLATFORM_COUNT; i++)
+	{
+		bool IsGround;										//나중에 Player와 연결
+		IsGround = Platform_DetectIsGround(&map->PlatformList[i], player);
+	}
 
 }
 

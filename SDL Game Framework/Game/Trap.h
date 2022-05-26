@@ -48,7 +48,7 @@ typedef struct tagTrap
 /// <summary>
 /// 함정을 TargetPosition까지 움직인다.
 /// </summary>
-void Trap_TrapMove(Trap* trap);
+void Trap_TrapMove(Trap* trap, Player* player, int32 x, int32 y);
 
 /// <summary>
 /// 목표물의 위치 TargetPosition 값을 받는다.
