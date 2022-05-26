@@ -2,25 +2,29 @@
 
 #include "Framework.h";
 #include "Map.h"
+#include "Animation.h"
 
 #define PLAYER_WALK_SPEED 15		//플레이어 이동 속도
 #define PLAYER_JUMP_SPEED -35		//플레이어 점프 속도(위쪽이 -라)
 #define PLAYER_MAX_JUMPING_COUNT 2	//플레이어 점프 카운트
-#define	PLAYER_IMAGE_COUNT 5
-#define PLAYER_MAX_LIFE_TIME 4.5f
+#define PLAYER_MAX_STATE_COUNT 2	//플레이어 상태 종류 개수
+#define	PLAYER_MAX_DIRECTION_COUNT 2 //플레이어 방향 종류 개수
+#define PLAYER_MAX_IMAGE_COUNT 8	//각 종류별 최대 개수
+#define PLAYER_MAX_LIFE_TIME 4.5f	//플레이어가 가만히 있을 수 있는 최대 시간
 
 //플레이어 이동 상태
 enum Player_State 
 {
-	PLAYER_WALKING,
-	PLAYER_STOP
+	PLAYER_IDLE = PLAYER_IDE_PIC_COUNT,
+	PLAYER_Move = PLAYER_MOVE_PIC_COUNT,
+	PLAYER_DIE = PLAYER_DEATH_PIC_COUNT
 };
 
 //플래이어 이동 방향
 enum Player_Direction 
 {
-	PLAYER_RIGHT,
-	PLAYER_LEFT
+	PLAYER_LEFT,
+	PLAYER_RIGHT
 };
 
 typedef struct tagPlayer 
@@ -34,7 +38,7 @@ typedef struct tagPlayer
 	Position			position;	//플레이어 좌표 값
 
 	//점프 관련
-	bool				isJumpting;	//점프 중인지
+	bool				isJumping;	//점프 중인지
 	int32				currentJumpingCount;//현재 점프 카운트
 
 	//게임 종료 관련
@@ -45,14 +49,14 @@ typedef struct tagPlayer
 	SoundEffect			dieSound;	//사망시 효과음 
 
 	//플레이어 이미지
-	Image				images[PLAYER_IMAGE_COUNT]; //플레이어 이미지
-
+	Animation			animation;	//플레이어 이미지 애니메이션
+	
 } Player;
 
 //#### 기본 함수
-void Player_Init(Player* player);
+void Player_Init(Player* player, SoundEffect* deathEffectSound);
 
-void Player_Update(Player* player);
+void Player_Update(Player* player, Map* map);
 
 //나중에 다른 파일로 뺄 수도... 고민중
 void Player_Render(Player* player);
@@ -80,24 +84,24 @@ int32 Player_GetDirection(Player* player);
 /// <summary>
 /// 플레이어의 이동
 /// </summary>
-void Player_Move(Player* player, Platform* platforms);
+void Player_Move(Player* player, Map* map);
 
 /// <summary>
 /// 플레이어의 점프 연산
 /// </summary>
-void Player_Jump(Player* player, Trap* traps);
+void Player_Jump(Player* player, Map* map);
 
 /// <summary>
 /// 플레이어가 움직일 수 있는지
 /// </summary>
 /// <param name="platforms">맵의 플랫폼 배열</param>
-bool Player_IsMovable(Player* player, Platform* platforms);
+bool Player_IsMovable(Player* player, Map* map);
 
 /// <summary>
 /// 플레이어가 죽었는지
 /// </summary>
 /// <param name="traps">맵의 함정 배열</param>
-bool Player_IsHitTrap(Player* player, Trap* traps);
+bool Player_IsHitTrap(Player* player, Map* map);
 
 /// <summary>
 /// 플레이어가 가만히 있는지에 대한 처리
