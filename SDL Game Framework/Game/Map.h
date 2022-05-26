@@ -42,11 +42,15 @@ typedef struct tagMap
 
 	//맵(플랫폼)
 	Platform	PlatformList[MAX_PLATFORM_COUNT];
+	//맵(함정)
 	Trap		TrapList[MAX_TRAP_COUNT];
 	
-	Position	StartPoint;
-	Position	DestinationPoint;
-	SavePoint	SavePoint[MAX_SAVE_POINT_COUNT];
+	Position	StartPoint;			//시작 좌표
+	Position	DestinationPoint;	//목적 좌표
+
+	Position	RespawnPoint;		//리스폰 지점 좌표
+	//세이브 포인트 (좌표/활성화 여부)
+	SavePoint	SavePointList[MAX_SAVE_POINT_COUNT];
 
 	float		ActiveTime;			//이벤트 델타타임 적용
 } Map;
@@ -64,22 +68,25 @@ void Map_Release(Map* map);
 //####추가 함수
 
 /// <summary>
-/// 플랫폼의 위에 Player가 있는지 판별한다?
+/// 플랫폼의 위에 Player가 있는지 판별한다.
 /// </summary>
-bool Map_DetectIsGround(Map* map);
+/// <returns>
+/// 플레이어가 플랫폼 좌우로 걸치는 범위 안, 플랫폼 바로 위에 있다면 true, 아니면 false
+/// </returns>
+bool Platform_DetectIsGround(Map* map);
 
 /// <summary>
 /// 플랫폼을 주기에 따라 가로로 반복하여 움직인다.
 /// </summary>
-void Map_PlatformHorizontalMove(Map* map, Platform* platform);
+void Platform_PlatformHorizontalMove(Map* map, Platform* platform);
 
 /// <summary>
 /// 플랫폼을 주기에 따라 세로로 반복하여 움직인다.
 /// </summary>
-void Map_PlatformVerticalMove(Map* map, Platform* platform);
+void Platform_PlatformVerticalMove(Map* map, Platform* platform);
 
 /// <summary>
 /// 맵의 세이브 포인트를 검사한다.
 /// </summary>
 /// <returns>세이브 포인트의 좌표값 int32 배열</returns>
-int32* Map_DetectSavePoint(Map* map, Player* player);
+void Map_DetectSavePoint(Map* map, Player* player);

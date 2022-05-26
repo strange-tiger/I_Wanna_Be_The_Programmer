@@ -29,6 +29,7 @@ typedef struct tagPlayer
 
 	//위치 관련
 	Position			Position;	//플레이어 좌표 값
+	RECT				Rect;
 
 	//점프 관련
 	bool				isJumpting;	//점프 중인지

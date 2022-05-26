@@ -11,12 +11,15 @@ void Map_Init(Map* map, int32 StageNum)
 	Audio_LoadMusic(&map->BGM, "");
 	Audio_LoadMusic(&map->DieBGM, "");
 
+	//맵 시작 지점 좌표 초기화
 	map->StartPoint.X = 0;
 	map->StartPoint.Y = 0;
 
+	//맵 목적 지점 좌표 초기화
 	map->DestinationPoint.X = 0;
 	map->DestinationPoint.Y = 0;
 
+	//델타타임 저장 초기화
 	map->ActiveTime = 0.0f;
 
 	for (int i = 0; i < MAX_PLATFORM_COUNT; i++)
@@ -75,6 +78,32 @@ void Map_Init(Map* map, int32 StageNum)
 		Audio_LoadSoundEffect(&map->TrapList[i].effectSound, "");	// Trap 오디오 로드 // csv 파싱 값
 		Image_LoadImage(&map->TrapList[i].Image2, "");				// Trap 변경용 이미지 로드 // csv 파싱 값
 	}
+
+	for (int i = 0; i < MAX_SAVE_POINT_COUNT; i++)
+	{
+		Image_LoadImage(&map->SavePointList[i].Platform.Image, "");			// SavePoint 이미지 로드 // csv 파싱 값
+
+		// 좌표 및 가로세로 폭 초기화 // csv 파싱 값
+		map->SavePointList[i].Platform.Position.X = 0;
+		int32 platformX = map->SavePointList[i].Platform.Position.X;
+
+		map->SavePointList[i].Platform.Position.Y = 0;
+		int32 platformY = map->SavePointList[i].Platform.Position.Y;
+
+		map->SavePointList[i].Platform.Width = 0;
+		int32 platformWidth = map->SavePointList[i].Platform.Width;
+
+		map->SavePointList[i].Platform.Height = 0;
+		int32 platformHeight = map->SavePointList[i].Platform.Height;
+
+		// Platform Rect 구성
+		map->SavePointList[i].Platform.Rect.left = platformX - platformWidth / 2;
+		map->SavePointList[i].Platform.Rect.top = platformY - platformHeight / 2;
+		map->SavePointList[i].Platform.Rect.right = platformX + platformWidth / 2;
+		map->SavePointList[i].Platform.Rect.bottom = platformY + platformHeight / 2;
+
+		map->SavePointList[i].Active = false;		//SavePoint 활성도 초기화
+	}
 }
 
 void Map_Update(Map* map)
@@ -117,23 +146,24 @@ void Map_Release(Map* map)
 	}
 }
 
-bool Map_DetectIsGround(Map* map, Player* player)
+bool Platform_DetectIsGround(Platform* platform, Player* player)
 {
 	RECT tempRect;
-	for (int i; i < MAX_PLATFORM_COUNT; i++)
+	
+	if (player->Rect.left > platform->Rect.right || player->Rect.right < platform->Rect.left)
 	{
-		if (player->Rect.bottom < map->PlatformList[i].Rect.top)
-		{
-			break;
-		}
-		if (IntersectRect(&tempRect, &player->Rect, &map->PlatformList[i].Rect))
-		{
-
-		}
+		return false;
 	}
+	else if (player->Rect.bottom <= platform->Rect.top /*IntersectRect(&tempRect, &player->Rect, &platform->Rect)*/)
+	{
+		return true;
+	}
+
+	return false;
+	
 }
 
-void Map_PlatformHorizontalMove(Map* map, Platform* platform)
+void Platform_PlatformHorizontalMove(Map* map, Platform* platform)
 {
 	if (map->ActiveTime >= PLATFORM_MOVE_CYCLE)
 	{
@@ -150,7 +180,7 @@ void Map_PlatformHorizontalMove(Map* map, Platform* platform)
 	}
 }
 
-void Map_PlatformVerticalMove(Map* map, Platform* platform)
+void Platform_PlatformVerticalMove(Map* map, Platform* platform)
 {
 	if (map->ActiveTime >= PLATFORM_MOVE_CYCLE)
 	{
@@ -167,23 +197,20 @@ void Map_PlatformVerticalMove(Map* map, Platform* platform)
 	}
 }
 
-int32* Map_DetectSavePoint(Map* map, Player* player)
+void Map_DetectSavePoint(Map* map, Player* player)
 {
-	int p[2];
+	RECT tempRect;
 
 	for (int i = 0; i < MAX_SAVE_POINT_COUNT; i++)
 	{
-		if (map->SavePoint[i].Active == false)
+		if (map->SavePointList[i].Active == false)
 		{
-			if (1) // 충돌 처리? 
+			if (IntersectRect(&tempRect, &player->Rect, &map->SavePointList[i].Platform.Rect)) // 플레이어와 세이브 포인트 충돌 처리
 			{
-				map->SavePoint[i].Active = !map->SavePoint[i].Active;
+				map->SavePointList[i].Active = !map->SavePointList[i].Active;
 
-				p[0] = map->SavePoint[i].Platform.Position.X;
-				p[1] = map->SavePoint[i].Platform.Position.Y;
+				map->RespawnPoint = map->SavePointList[i].Platform.Position;
 			}
 		}
 	}
-
-	return p;
 }
