@@ -49,6 +49,7 @@ void Map_Init(Map* map, int32 StageNum)
 	for (int i = 0; i < MAX_TRAP_COUNT; i++)
 	{
 		Image_LoadImage(&map->TrapList[i].Image, "");				// Trap 이미지 로드 // csv 파싱 값
+		Image_LoadImage(&map->TrapList[i].Image2, "");				// Trap 바꿀 이미지 로드 // csv 파싱 값
 		
 		// 좌표 및 가로세로 폭 초기화 // csv 파싱 값
 		map->TrapList[i].Position.X = 0;
@@ -70,6 +71,10 @@ void Map_Init(Map* map, int32 StageNum)
 		map->TrapList[i].Rect.bottom		= trapY + trapHeight / 2;
 
 		map->TrapList[i].Type = TRAP_BASIC;							// Trap 타입 초기화 // csv 파싱 값
+
+		map->TrapList[i].Active = true;							// Trap 활성화 초기화 // csv 파싱 값
+		map->TrapList[i].ActiveTime = 0.0f;							// Trap 이벤트 시간 초기화 // csv 파싱 값
+
 		map->TrapList[i].TargetPosition.X = 0;							// Trap 타겟 위치 X 초기화 // 직선 or 플레이어 위치
 		map->TrapList[i].TargetPosition.Y = 0;							// Trap 타겟 위치 Y 초기화 // 직선 or 플레이어 위치
 
@@ -163,7 +168,14 @@ void Map_Render(Map* map)
 
 	for (int i = 0; i < MAX_TRAP_COUNT; i++)
 	{
-		Renderer_DrawImage(&map->TrapList[i].Image, &map->TrapList[i].Position.X, &map->TrapList[i].Position.Y);
+		if (map->TrapList[i].Active)
+		{
+			Renderer_DrawImage(&map->TrapList[i].Image, &map->TrapList[i].Position.X, &map->TrapList[i].Position.Y);
+		}
+		else if (!map->TrapList[i].Active)
+		{
+			Renderer_DrawImage(&map->TrapList[i].Image2, &map->TrapList[i].Position.X, &map->TrapList[i].Position.Y);
+		}
 	}
 }
 

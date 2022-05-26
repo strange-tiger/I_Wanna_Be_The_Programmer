@@ -92,6 +92,7 @@ void Trap_TrapSwitch(Trap* trap)
 		if (trap->ActiveTime >= TRAP_SWITCH_CYCLE)
 		{
 			trap->Active = !trap->Active;
+			
 			trap->ActiveTime = 0.0f;
 		}
 	}
