@@ -46,6 +46,9 @@
     <ClCompile Include="Framework\Csv.c">
       <Filter>Framework</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Player.c">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />

@@ -66,10 +66,21 @@ void release_title(void)
 }
 #pragma endregion
 
+
+//------------------------------------ ▼ 인게임 메인 씬 ▼ ------------------------------------
+
 #pragma region MainScene
+
+typedef struct PlayerData
+{
+	int32		mapSaveID;
+	Position	playerSavePos;
+	int32		youDieCount;
+}PlayerData;
+
 typedef struct MainSceneData
 {
-	int32	temp;
+	PlayerData pData;
 	// 플레이어 데이터
 	// 맵 데이터
 
@@ -97,17 +108,35 @@ void init_main(void)
 	// 플레이어,맵 데이터 이니셜라이즈
 	
 	FILE* savefp;
-	if (savefp = fopen("saveData.txt", "rt"))
+	if (savefp = fopen("saveData.bin", "rb"))
 	{
-		LogInfo("saveData.txt : true");
+		LogInfo("saveData : true");
 		// 세이브 파일 로드
+		while (fread(&data->pData, sizeof(data->pData), 1, savefp) == 1)
+		{ 
+		}
+		LogInfo("map : %d", data->pData.mapSaveID);
+		LogInfo("POS.X : %d", data->pData.playerSavePos.X);
+		LogInfo("POS.Y : %d", data->pData.playerSavePos.Y);
+		LogInfo("DIECOUNT : %d", data->pData.youDieCount);
+
+
 		fclose(savefp);
 	}
 	else
 	{
-		LogInfo("saveData.txt : false");
+		LogInfo("saveData : false");
+
 		// 세이브 파일 생성
-		savefp = fopen("saveData.txt", "w");
+		savefp = fopen("saveData.bin", "wb");
+
+		// 플레이어 데이터 저장 << 나중에 함수로 빼서 Save() 필요할 때 사용
+		data->pData.mapSaveID = 3;
+		data->pData.playerSavePos.X = 10;
+		data->pData.playerSavePos.Y = 20;
+		data->pData.youDieCount = 99;
+
+		fwrite(&data->pData, sizeof(data->pData), 1 , savefp);
 		fclose(savefp);
 	}
 
