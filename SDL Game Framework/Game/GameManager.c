@@ -47,11 +47,10 @@ void SaveData(GameManager* gdata)
 {
 	savefp = fopen("saveData.bin", "wb");
 
-	// 플레이어 데이터 저장 << 나중에 함수로 빼서 Save() 필요할 때 사용
-	gdata->pData.mapSaveID = 3;
-	gdata->pData.playerSavePos.X = 10;
-	gdata->pData.playerSavePos.Y = 20;
-	gdata->pData.youDieCount = 99;
+	gdata->pData.mapSaveID = 3; // 맵 아이디 나중에 추가되면
+	gdata->pData.playerSavePos.X = 10; // gdata->Player.position.Y
+	gdata->pData.playerSavePos.Y = 20; // gdata->Player.position.Y
+	gdata->pData.youDieCount = 99; // Player.c -> Player_Die()에서 카운트
 
 	fwrite(&gdata->pData, sizeof(gdata->pData), 1, savefp);
 	fclose(savefp);
