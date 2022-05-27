@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Map.h"
 
 void Map_Init(Map* map, int32 StageNum) {
