@@ -5,10 +5,14 @@
 
 void Animation_Init(Animation* animation)
 {
-
+	//기본 정보 초기화
 	animation->picCount = 0;
 	animation->animSpeed = 0.0f;
 
+	//이전 상태 초기화
+	prevState = -1;
+
+	//이미지 받아오기
 	Image_LoadImage(&animation->playerIdleImages[0][0], "Idle_L0.png");
 	Image_LoadImage(&animation->playerIdleImages[0][1], "Idle_L1.png");
 	Image_LoadImage(&animation->playerIdleImages[1][0], "Idle_R0.png");
@@ -45,12 +49,14 @@ void Animation_Init(Animation* animation)
 
 void Aniamtion_Update(Player* player)
 {
-	Animation* animation = &player->animation;
+	Animation* animation = Player_GetAnimation(player);
 
-	if (prevState != player->state)
+	// 상태가 변경될 때만 기본 정보를 변경시킴.
+	if (prevState != Player_GetState(player))
 	{
-		prevState = player->state;
-		switch (player->state)
+		prevState = Player_GetState(player);
+
+		switch (Player_GetState(player))
 		{
 		case PLAYER_IDLE:
 		case PLAYER_MOVE:
@@ -72,6 +78,7 @@ void Aniamtion_Update(Player* player)
 		}
 	}
 
+	//이미지 보여준 시간 측정하여 이미지 전환
 	if (animation->elapsedTime < animation->animSpeed)
 	{
 		animation->elapsedTime += Timer_GetDeltaTime();
@@ -80,17 +87,18 @@ void Aniamtion_Update(Player* player)
 	{
 		animation->picCount++;
 		animation->elapsedTime = 0;
-		if (animation->picCount > player->state)
+		if (animation->picCount > Player_GetState(player))
 		{
 			if (!animation->isLoop)
 			{
-				player->state = PLAYER_IDLE;
+				Player_SetState(player, PLAYER_IDLE);
 			}
 			animation->picCount = 0;
 		}
 	}
 
-	switch (player->state)
+	//현재 상태에 따른 보여줄 이미지 선택
+	switch (Player_GetState(player))
 	{
 	case PLAYER_IDLE:
 		animation->showImage = &animation->playerIdleImages[player->direction][animation->picCount];
@@ -109,11 +117,20 @@ void Aniamtion_Update(Player* player)
 
 void Animation_Render(Animation* animation, Position* position)
 {
-	Renderer_DrawImage(animation->showImage, position->X, position->Y);
+	//이미지 Render
+	if (prevState != PLAYER_DIE)//플레이어가 죽었다면 해당 이미지 크기에 따라 다시 위치 조정
+	{
+		Renderer_DrawImage(animation->showImage, position->X, position->Y);
+	}
+	else 
+	{
+		Renderer_DrawImage(animation->showImage, position->X, position->Y - (animation->showImage->Height - animation->playerIdleImages[0][0].Height));
+	}
 }
 
 void Animation_Release(Animation* animation)
 {
+	//이미지 Free
 	Image_FreeImage(&animation->playerIdleImages[0][0]);
 	Image_FreeImage(&animation->playerIdleImages[0][1]);
 	Image_FreeImage(&animation->playerIdleImages[1][0]);

@@ -35,21 +35,21 @@ typedef struct Player
 	enum Player_Direction	direction;	//플레이어 이동 방향
 
 	//위치 관련
-	Position			position;	//플레이어 좌표 값
+	Position			position;		//플레이어 좌표 값
 
 	//점프 관련
-	bool				isJumping;	//점프 중인지
 	int32				currentJumpingCount;//현재 점프 카운트
+	bool				isJumping;		//점프 중인지
 
 	//게임 종료 관련
-	bool				isPlayerDie; //플레이어 사망 했는지
-	float				elapsedTime; //플레이어가 가만히 있던 시간 모음
+	float				elapsedTime;	//플레이어가 가만히 있던 시간 모음
+	bool				isPlayerDie;	//플레이어 사망 했는지
 
 	//효과음
 	SoundEffect*			dieSound;	//사망시 효과음 
 
 	//플레이어 이미지
-	Animation			animation;	//플레이어 이미지 애니메이션
+	Animation			animation;		//플레이어 이미지 애니메이션
 	
 } Player;
 
@@ -85,6 +85,16 @@ int32 Player_GetDirection(Player* player);
 /// 플레이어 상태 반환
 /// </summary>
 int32 Player_GetState(Player* player);
+
+/// <summary>
+/// 플레이어 상태 반환
+/// </summary>
+int32 Player_SetState(Player* player, enum Player_State state);
+
+/// <summary>
+/// 플레이어 애니메이션 반환
+/// </summary>
+Animation* Player_GetAnimation(Player* player);
 
 /// <summary>
 /// 플레이어의 이동

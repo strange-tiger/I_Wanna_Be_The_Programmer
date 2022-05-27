@@ -1,6 +1,7 @@
 #include "stdafx.h"
-#include "Player.h"
 #include "Framework.h"
+#include "Player.h"
+#include "Animation.h"
 
 //#### 기본 함수
 void Player_Init(Player* player, SoundEffect* dieSound) 
@@ -26,19 +27,28 @@ void Player_Init(Player* player, SoundEffect* dieSound)
 
 void Player_Update(Player* player, Map* map)
 {
+	//기본 이동 및 점프 처리
 	Player_Move(player, map);
 	Player_Jump(player, map);
 	Player_StayStill(player);
+
+	//애니메이션 업데이트
+	Aniamtion_Update(player);
 }
 
 void Player_Render(Player* player) 
 {
-
+	//에니메이션만 렌더
+	Animation_Render(&player->animation, &player->position);
 }
 
 void Player_Release(Player* player) 
 {
+	//플레이어 관련 Release
+	Audio_FreeSoundEffect(player->dieSound);
 
+	//에니메이션 Release
+	Animation_Release(&player->animation);
 }
 
 
@@ -66,6 +76,18 @@ int32 Player_GetDirection(Player* player)
 int32 Player_GetState(Player* player)
 {
 	return player->state;
+}
+
+//완
+void Player_SetState(Player* player, enum Player_State state)
+{
+	player->state = state;
+}
+
+//완
+Animation* Player_GetAnimation(Player* player)
+{
+	return &player->animation;
 }
 
 //완
