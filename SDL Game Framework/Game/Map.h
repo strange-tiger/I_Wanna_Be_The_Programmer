@@ -44,6 +44,9 @@ typedef struct tagSwitch
 //기본적인 맵에 대한 스트럭트(추후 수정/추가 예정)
 typedef struct tagMap
 {
+	//ID
+	int32		ID;					//식별 수
+
 	//배경
 	Image		BackGroundImage;	//배경화면
 	Music		BGM;				//배경 음악
@@ -85,7 +88,12 @@ void Map_Release(Map* map);
 /// <returns>
 /// 플레이어가 플랫폼 좌우로 걸치는 범위 안, 플랫폼 바로 위에 있다면 true, 아니면 false
 /// </returns>
-bool Platform_DetectIsGround(Platform* platform, Player* player);
+bool Platform_GetIsGround(Platform* platform, Player* player);
+
+/// <summary>
+/// 플랫폼의 위에 Player가 있는지 판별하고 전달한다.
+/// </summary>
+void Platform_SetIsGround(Platform* platform, Player* player);
 
 /// <summary>
 /// 플랫폼의 렉트를 구성한다.
@@ -103,6 +111,26 @@ void Platform_PlatformHorizontalMove(Map* map, Platform* platform);
 void Platform_PlatformVerticalMove(Map* map, Platform* platform);
 
 /// <summary>
+/// 맵의 모든 플랫폼을 주기에 따라 움직인다.
+/// </summary>
+void Map_PlatformMove(Map* map);
+
+/// <summary>
 /// 맵의 세이브 포인트를 검사한다.
 /// </summary>
 void Map_DetectSavePoint(Map* map, Player* player);
+
+/// <summary>
+/// 맵의 함정을 주기에 따라 작동시킨다.
+/// </summary>
+void Map_TrapActivate(Map* map, Player* player);
+
+/// <summary>
+/// 맵의 모든 플랫폼 위에 플레이어가 있는지 판별한다.
+/// </summary>
+void Map_PlatformIsGround(Map* map, Player* player);
+
+/// <summary>
+/// 맵을 업데이트 한다. 플레이어와 연관이 있는 정보를 업데이트한다.
+/// </summary>
+void Map_UpdateWithPlayer(Map* map, Player* player);

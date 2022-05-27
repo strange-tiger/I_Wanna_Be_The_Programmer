@@ -1,11 +1,11 @@
 #include "Map.h"
 #include "Trap.h"
 
-void Map_Init(Map* map, int32 StageNum)
+void Map_Init(Map* map)
 {
 	// 테스트용
-	//CsvFile* csvFile;
-	//CreateCsvFile(csvFile, "CsvTest.csv");
+	CsvFile* csvFile;
+	CreateCsvFile(csvFile, "CsvTest.csv");
 
 	Image_LoadImage(&map->BackGroundImage, "");			// 배경 이미지 로드
 	Audio_LoadMusic(&map->BGM, "");						// 배경 음악 로드
@@ -64,9 +64,8 @@ void Map_Init(Map* map, int32 StageNum)
 		map->TrapList[i].Active = true;		// Trap 활성화 초기화	/// csv파싱 필요
 		map->TrapList[i].ActiveTime = 0.0f;	// Trap 델타타임 초기화	/// csv파싱 필요
 
-		map->TrapList[i].TargetPosition.X = 0;	// Trap 타겟 위치 X 초기화 // 직선 or 플레이어 위치
-		map->TrapList[i].TargetPosition.Y = 0;	// Trap 타겟 위치 Y 초기화 // 직선 or 플레이어 위치
-
+		Trap_InitializeTargetPosition(&map->TrapList[i], 0, 0);		// Trap 타겟 위치 초기화 // 직선 or 플레이어 위치	  /// csv파싱 필요 
+		
 		map->TrapList[i].ImageAlpha = 255;	// ImageAlpha 초기화		/// 변경 시 csv파싱 여부 확인 요
 	}
 
@@ -114,42 +113,14 @@ void Map_Update(Map* map, Player* player)	// player 정보도 들어가는 것이 맞나..?
 		map->TrapList[i].ActiveTime = map->ActiveTime;
 	}
 
-	for (int32 i = 0; i < MAX_PLATFORM_COUNT; i++)
-	{
-		switch (map->PlatformList[i].MoveState)
-		{
-		case 0:
-			break;
-		case 1:
-			Platform_PlatformHorizontalMove(map, &map->PlatformList[i]);
-			break;
-		case 2:
-			Platform_PlatformVerticalMove(map, &map->PlatformList[i]);
-			break;
-		default:
-			break;
-		}
-	}
-
-	for (int32 i = 0; i < MAX_TRAP_COUNT; i++)
-	{
-		Trap_TrapMove(&map->TrapList[i], player, x, y);				/// csv파싱 필요
-		Trap_TrapSwitch(&map->TrapList[i]);
-	}
-
+	Map_PlatformMove(map);
+		
+	Map_UpdateWithPlayer(map, player);
+		
 	if (map->ActiveTime > PLATFORM_MOVE_CYCLE)
 	{
 		map->ActiveTime = 0.0f;
 	}
-
-	Map_DetectSavePoint(map, player);
-
-	for (int32 i = 0; i < MAX_PLATFORM_COUNT; i++)
-	{
-		bool IsGround;									//나중에 Player와 연결
-		IsGround = Platform_DetectIsGround(&map->PlatformList[i], player);
-	}
-
 }
 
 void Map_Render(Map* map)
@@ -202,7 +173,7 @@ void Map_Release(Map* map)
 	}
 }
 
-bool Platform_DetectIsGround(Platform* platform, Player* player)
+bool Platform_GetIsGround(Platform* platform, Player* player)
 {
 	RECT tempRect;
 	
@@ -219,6 +190,12 @@ bool Platform_DetectIsGround(Platform* platform, Player* player)
 	
 }
 
+void Platform_SetIsGround(Platform* platform, Player* player)
+{
+	bool IsGround;									//나중에 Player와 연결
+	IsGround = Platform_GetIsGround(platform, player);
+}
+
 void Platform_CreateRect(Platform* platform)
 {
 	platform->Rect.left = platform->Position.X;
@@ -231,33 +208,59 @@ void Platform_PlatformHorizontalMove(Map* map, Platform* platform)
 {
 	if (map->ActiveTime >= PLATFORM_MOVE_CYCLE)
 	{
-		if (!platform->DirectionForCycle)
-		{
-			platform->Position.X += PLATFORM_MOVE_SPEED;
-		}
-		else if (platform->DirectionForCycle)
-		{
-			platform->Position.X -= PLATFORM_MOVE_SPEED;
-		}
-		map->ActiveTime = 0.0f;
-		platform->DirectionForCycle = !platform->DirectionForCycle;
+		return;
 	}
+
+	if (!platform->DirectionForCycle)
+	{
+		platform->Position.X += PLATFORM_MOVE_SPEED;
+	}
+	else if (platform->DirectionForCycle)
+	{
+		platform->Position.X -= PLATFORM_MOVE_SPEED;
+	}
+	map->ActiveTime = 0.0f;
+	platform->DirectionForCycle = !platform->DirectionForCycle;
+
 }
 
 void Platform_PlatformVerticalMove(Map* map, Platform* platform)
 {
-	if (map->ActiveTime >= PLATFORM_MOVE_CYCLE)
+	if (map->ActiveTime < PLATFORM_MOVE_CYCLE)
 	{
-		if (!platform->DirectionForCycle)
+		return;
+	}
+
+	if (!platform->DirectionForCycle)
+	{
+		platform->Position.Y += PLATFORM_MOVE_SPEED;
+	}
+	else if (platform->DirectionForCycle)
+	{
+		platform->Position.Y -= PLATFORM_MOVE_SPEED;
+	}
+	map->ActiveTime = 0.0f;
+	platform->DirectionForCycle = !platform->DirectionForCycle;
+
+}
+
+void Map_PlatformMove(Map* map)
+{
+	for (int32 i = 0; i < MAX_PLATFORM_COUNT; i++)
+	{
+		switch (map->PlatformList[i].MoveState)
 		{
-			platform->Position.Y += PLATFORM_MOVE_SPEED;
+		case 0:
+			break;
+		case 1:
+			Platform_PlatformHorizontalMove(map, &map->PlatformList[i]);
+			break;
+		case 2:
+			Platform_PlatformVerticalMove(map, &map->PlatformList[i]);
+			break;
+		default:
+			break;
 		}
-		else if (platform->DirectionForCycle)
-		{
-			platform->Position.Y -= PLATFORM_MOVE_SPEED;
-		}
-		map->ActiveTime = 0.0f;
-		platform->DirectionForCycle = !platform->DirectionForCycle;
 	}
 }
 
@@ -277,4 +280,30 @@ void Map_DetectSavePoint(Map* map, Player* player)
 			}
 		}
 	}
+}
+
+void Map_TrapActivate(Map* map, Player* player)
+{
+	for (int32 i = 0; i < MAX_TRAP_COUNT; i++)
+	{
+		Trap_TrapMove(&map->TrapList[i], player);
+		Trap_TrapSwitch(&map->TrapList[i]);
+	}
+}
+
+void Map_PlatformIsGround(Map* map, Player* player)
+{
+	for (int32 i = 0; i < MAX_PLATFORM_COUNT; i++)
+	{
+		Platform_SetIsGround(&map->PlatformList[i], player);
+	}
+}
+
+void Map_UpdateWithPlayer(Map* map, Player* player)
+{
+	Map_TrapActivate(map, player);
+
+	Map_DetectSavePoint(map, player);
+
+	Map_PlatformIsGround(map, player);
 }

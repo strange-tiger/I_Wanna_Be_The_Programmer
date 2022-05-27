@@ -44,12 +44,17 @@ typedef struct tagTrap
 /// <summary>
 /// 함정을 TargetPosition까지 움직인다.
 /// </summary>
-void Trap_TrapMove(Trap* trap, Player* player, int32 x, int32 y);
+void Trap_TrapMove(Trap* trap, Player* player);
 
 /// <summary>
-/// 목표물의 위치 TargetPosition 값을 받는다.
+/// 함정의 목표물의 위치 TargetPosition 값을 초기화한다.
 /// </summary>
-void Trap_GetTargetPosition(Trap* trap, Player* player, int32 x, int32 y);
+void Trap_InitializeTargetPosition(Trap* trap, int32 x, int32 y);
+
+/// <summary>
+/// 유도 함정의 목표물의 위치 TargetPosition 값을 받는다.
+/// </summary>
+void Trap_GetTrackTargetPosition(Trap* trap, Player* player);
 
 /// <summary>
 /// 스위치 함정을 주기에 따라 깜박인다.
