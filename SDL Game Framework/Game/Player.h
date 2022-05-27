@@ -46,7 +46,7 @@ typedef struct Player
 	float				elapsedTime; //플레이어가 가만히 있던 시간 모음
 
 	//효과음
-	SoundEffect			dieSound;	//사망시 효과음 
+	SoundEffect*			dieSound;	//사망시 효과음 
 
 	//플레이어 이미지
 	Animation			animation;	//플레이어 이미지 애니메이션
@@ -67,7 +67,7 @@ void Player_Release(Player* player);
 //#### 추가 함수(추가 예정)
 
 /// <summary>
-/// 플레이어가 움직일 수 있는지
+/// 플레이어의 좌표 값 세팅
 /// </summary>
 void Player_SetPosition(Player* player, const Position newPosition);
 
@@ -77,9 +77,14 @@ void Player_SetPosition(Player* player, const Position newPosition);
 Position Player_GetPosition(Player* player);
 
 /// <summary>
-/// 플레이어 좌표 값 반환
+/// 플레이어 방향 반환
 /// </summary>
 int32 Player_GetDirection(Player* player);
+
+/// <summary>
+/// 플레이어 상태 반환
+/// </summary>
+int32 Player_GetState(Player* player);
 
 /// <summary>
 /// 플레이어의 이동
