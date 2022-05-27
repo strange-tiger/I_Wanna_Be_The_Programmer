@@ -5,7 +5,6 @@
 #include "Framework/Csv.h"
 
 Scene g_Scene;
-
 static ESceneType s_nextScene = SCENE_NULL;
 
 #pragma region TitleScene
@@ -38,20 +37,6 @@ typedef struct TitleSceneData
 
 	Image	Title_Arrow;
 	int32	Title_Arrow_posY;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	//Title Scene 시간 및 메뉴 선택 구현을 위한 구조체
 	float	TitleScenePlayTime;
@@ -127,7 +112,6 @@ void update_title(void)
 			exit(0);															
 			break;
 		}
-		
 	}
 
 	//일정 시간마다 Main Title 줌 인/아웃 구현을 위한 코오오오드
@@ -144,7 +128,6 @@ void update_title(void)
 		
 		data->Title_SmallTitle_posX += 1;
 		data->Title_SmallTitle_posY++;
-		
 	}
 	if ((int32)(data->TitleScenePlayTime * 2.5) % 2 == 0)
 	{
@@ -326,16 +309,16 @@ void init_Credit(void)
 	Image_LoadImage(&data->Credit_Image_JH, "Credit_Image_JH.jpg");
 	Image_LoadImage(&data->Credit_Text_JH, "Credit_Text_JH.png");
 	
-	Image_LoadImage(&data->Credit_Image_HJ, "Credit_Image_HJ.jpg");
+	Image_LoadImage(&data->Credit_Image_HJ, "Credit_Image_HJ.png");
 	Image_LoadImage(&data->Credit_Text_HJ, "Credit_Text_HJ.png");
 	
 	Image_LoadImage(&data->Credit_Image_JS, "Credit_Image_JS.png");
 	Image_LoadImage(&data->Credit_Text_JS, "Credit_Text_JS.png");
 	
-	Image_LoadImage(&data->Credit_Image_WJ, "Credit_Image_WJ.jpg");
+	Image_LoadImage(&data->Credit_Image_WJ, "Credit_Image_WJ.png");
 	Image_LoadImage(&data->Credit_Text_WJ, "Credit_Text_WJ.png");
 	
-	Image_LoadImage(&data->Credit_Image_JM, "Credit_Image_JM.jpeg");
+	Image_LoadImage(&data->Credit_Image_JM, "Credit_Image_JM.png");
 	Image_LoadImage(&data->Credit_Text_JM, "Credit_Text_JM.png");
 
 	data->CreditSceneChange = 1;
@@ -398,31 +381,32 @@ void render_Credit(void)
 	{
 	case 1:
 		Renderer_DrawImage(&data->Credit_Image_JJ, 0, 0);
-		Renderer_DrawImage(&data->Credit_Text_JJ, 0, 0);
+		Renderer_DrawImage(&data->Credit_Text_JJ, 750, 200);
 		break;
 	case 2:
-		Renderer_DrawImage(&data->Credit_Image_SY, 0, 0);
-		Renderer_DrawImage(&data->Credit_Text_SY, 0, 0);
+		Renderer_DrawImage(&data->Credit_Image_SY, 650, 200);
+		Renderer_DrawImage(&data->Credit_Text_SY, 200, 200);
 		break;
 	case 3:
-		Renderer_DrawImage(&data->Credit_Image_JH, 0, 0);
-		Renderer_DrawImage(&data->Credit_Text_JH, 0, 0);
+		Renderer_DrawImage(&data->Credit_Image_JH, 100, 200);
+		Renderer_DrawImage(&data->Credit_Image_JH, 900, 200);
+		Renderer_DrawImage(&data->Credit_Text_JH, 450, 200);
 		break;
 	case 4:
-		Renderer_DrawImage(&data->Credit_Image_HJ, 0, 0);
-		Renderer_DrawImage(&data->Credit_Text_HJ, 0, 0);
+		Renderer_DrawImage(&data->Credit_Image_HJ, 500, 100);
+		Renderer_DrawImage(&data->Credit_Text_HJ, 400, 400);
 		break;
 	case 5:
-		Renderer_DrawImage(&data->Credit_Image_JS, 0, 0);
-		Renderer_DrawImage(&data->Credit_Text_JS, 0, 0);
+		Renderer_DrawImage(&data->Credit_Image_JS, 100, 100);
+		Renderer_DrawImage(&data->Credit_Text_JS, 750, 200);
 		break;
 	case 6:
-		Renderer_DrawImage(&data->Credit_Image_JM, 0, 0);
-		Renderer_DrawImage(&data->Credit_Text_JM, 0, 0);
+		Renderer_DrawImage(&data->Credit_Image_JM, 0, 573);
+		Renderer_DrawImage(&data->Credit_Text_JM, 452, 250);
 		break;
 	case 7:
-		Renderer_DrawImage(&data->Credit_Image_WJ, 0, 0);
-		Renderer_DrawImage(&data->Credit_Text_WJ, 0, 0);
+		Renderer_DrawImage(&data->Credit_Image_WJ, 520, 522);
+		Renderer_DrawImage(&data->Credit_Text_WJ, 452, 250);
 		break;
 	}
 }
