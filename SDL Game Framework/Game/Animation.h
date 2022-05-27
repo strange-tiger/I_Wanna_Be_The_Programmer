@@ -5,9 +5,11 @@
 #include "stdafx.h"
 
 #define PLAYER_DIRECTION_TYPE 2		//방향 개수
+
 #define PLAYER_IDE_PIC_COUNT 2		//멈췄을 때 이미지 개수
 #define PLAYER_MOVE_PIC_COUNT 8		//움직일 때 이미지 개수
 #define PLAYER_DEATH_PIC_COUNT 9	//죽었을 때 이미지 개수
+#define PLAYER_CLIMB_PIC_COUNT 4	//오르는 때 이미지 개수
 
 typedef struct tagAnimation{
 	int32 picCount;			//현재 사진 번호
@@ -21,6 +23,8 @@ typedef struct tagAnimation{
 	Image playerMoveImages[PLAYER_DIRECTION_TYPE][PLAYER_MOVE_PIC_COUNT];
 	//플레이어의 사망 이미지
 	Image playerDEATHImages[PLAYER_DEATH_PIC_COUNT];
+	//플레이어의 올라가는 이미지
+	Image playerClimbImages[PLAYER_CLIMB_PIC_COUNT];
 
 	Image* showImage;		//화면에 보일 이미지
 } Animation;

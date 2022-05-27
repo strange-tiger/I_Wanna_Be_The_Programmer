@@ -16,13 +16,13 @@ enum Trap_Type {
 typedef struct tagTrap
 {
 	//기본
-	Image		TrapImage;		//함정 이미지
-	Position	TrapPosition;	//함정 위치
-	int32		Width;		//함정 이미지의 가로 값
-	int32		Height;		//함정 이미지의 세로 값
+	Platform	Platform;		//함정도 플랫폼의 한 종류
 
 	//효과
 	enum Trap_Type	Type;	//함정 타입
+	bool		Active;
+	float		ActiveTime;
+	int32		Speed;
 	
 	//날아오는/추적 함정에서 쓰일 목표 지점
 	Position	TargetPosition;	//목표 지점 좌표값
@@ -36,3 +36,17 @@ typedef struct tagTrap
 } Trap;
 
 //####추가 함수
+/// <summary>
+/// 함정을 TargetPosition까지 움직인다.
+/// </summary>
+void Trap_TrapMove(Trap* trap, struct Player* player, int32 x, int32 y);
+
+/// <summary>
+/// 목표물의 위치 TargetPosition 값을 받는다.
+/// </summary>
+void Trap_GetTargetPosition(Trap* trap, struct Player* player, int32 x, int32 y);
+
+/// <summary>
+/// 스위치 함정을 주기에 따라 깜박인다.
+/// </summary>
+void Trap_TrapSwitch(Trap* trap);

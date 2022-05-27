@@ -52,6 +52,9 @@
     <ClCompile Include="Game\Player.c">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Map.c">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />

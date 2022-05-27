@@ -1,8 +1,13 @@
 #include "Map.h"
 
 void Map_Init(Map* map, int32 StageNum) {
-	//csv 파일에서 파싱해오기. (추후 csv 헤더 확정 후 수정 예정
-	CsvFile csv;
+	Image_LoadImage(&map->BackGroundImage, "");
+	Audio_LoadMusic(&map->BGM, "");
+	Audio_LoadMusic(&map->DieBGM, "");
+
+	//맵 시작 지점 좌표 초기화
+	map->StartPoint.X = 0;
+	map->StartPoint.Y = 0;
 
 }
 

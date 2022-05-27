@@ -45,6 +45,11 @@ void Animation_Init(Animation* animation)
 	Image_LoadImage(&animation->playerDEATHImages[6], "Die6.png");
 	Image_LoadImage(&animation->playerDEATHImages[7], "Die7.png");
 	Image_LoadImage(&animation->playerDEATHImages[8], "Die8.png");
+
+	Image_LoadImage(&animation->playerClimbImages[0], "Up_0.png");
+	Image_LoadImage(&animation->playerClimbImages[1], "Up_1.png");
+	Image_LoadImage(&animation->playerClimbImages[2], "Up_2.png");
+	Image_LoadImage(&animation->playerClimbImages[3], "Up_3.png");
 }
 
 void Aniamtion_Update(Player* player)
@@ -60,6 +65,7 @@ void Aniamtion_Update(Player* player)
 		{
 		case PLAYER_IDLE:
 		case PLAYER_MOVE:
+		case PLAYER_CLIMB:
 			animation->animSpeed = 0.5f;
 			animation->elapsedTime = 0.0f;
 			animation->isLoop = true;
@@ -108,6 +114,9 @@ void Aniamtion_Update(Player* player)
 		break;
 	case PLAYER_DIE:
 		animation->showImage = &animation->playerIdleImages[player->direction][animation->picCount];
+		break;
+	case PLAYER_CLIMB:
+		animation->showImage = &animation->playerClimbImages[animation->picCount];
 		break;
 	default:
 		printf("ERROR!!! WORNG PLAYER STATE!(BACK)\n");

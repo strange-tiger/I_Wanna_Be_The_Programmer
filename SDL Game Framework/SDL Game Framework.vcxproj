@@ -165,6 +165,7 @@ xcopy "$(ProjectDir)Asset\*.*" "$(TargetDir)Asset\" /E /Y</Command>
     <ClCompile Include="Framework\Timer.c" />
     <ClCompile Include="Framework\Window.c" />
     <ClCompile Include="Game\Animation.c" />
+    <ClCompile Include="Game\Map.c" />
     <ClCompile Include="Game\Player.c" />
     <ClCompile Include="Main.c" />
     <ClCompile Include="stdafx.c">
