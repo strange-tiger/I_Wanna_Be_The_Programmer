@@ -7,15 +7,19 @@ void Map_Init(Map* map, int32 StageNum)
 	//CsvFile* csvFile;
 	//CreateCsvFile(csvFile, "CsvTest.csv");
 
-	Image_LoadImage(&map->BackGroundImage, "");
-	Audio_LoadMusic(&map->BGM, "");
-	Audio_LoadMusic(&map->DieBGM, "");
+	Image_LoadImage(&map->BackGroundImage, "");			// 배경 이미지 로드
+	Audio_LoadMusic(&map->BGM, "");						// 배경 음악 로드
+	Audio_LoadMusic(&map->DieBGM, "");					// 사망시 음악 로드
 
-	//맵 시작 지점 좌표 초기화
+	Image_LoadImage(&map->Radder.Platform.Image, "");	// Radder 이미지 로드
+	map->Radder.Active = false;							// Radder 활성 초기화
+	map->Radder.Event = NULL;							// Radder 이벤트 초기화
+
+	//맵 시작 지점 좌표 초기화										/// csv파싱 필요
 	map->StartPoint.X = 0;
 	map->StartPoint.Y = 0;
 
-	//맵 목적 지점 좌표 초기화
+	//맵 목적 지점 좌표 초기화										/// csv파싱 필요
 	map->DestinationPoint.X = 0;
 	map->DestinationPoint.Y = 0;
 
@@ -24,90 +28,81 @@ void Map_Init(Map* map, int32 StageNum)
 
 	for (int i = 0; i < MAX_PLATFORM_COUNT; i++)
 	{
-		Image_LoadImage(&map->PlatformList[i].Image, "");			// Platform 이미지 로드 // csv 파싱 값
+		// Platform 이미지 로드
+		Image_LoadImage(&map->PlatformList[i].Image, "");			/// csv파싱 필요
 
-		// 좌표 및 가로세로 폭 초기화 // csv 파싱 값
+		// 좌표 및 가로세로 폭 초기화									/// csv파싱 필요
 		map->PlatformList[i].Position.X = 0;
-		int32 platformX = map->PlatformList[i].Position.X;
-
 		map->PlatformList[i].Position.Y = 0;
-		int32 platformY = map->PlatformList[i].Position.Y;
-
 		map->PlatformList[i].Width = 0;
-		int32 platformWidth = map->PlatformList[i].Width;
-
 		map->PlatformList[i].Height = 0;
-		int32 platformHeight = map->PlatformList[i].Height;
-
+				
 		// Platform Rect 구성
-		map->PlatformList[i].Rect.left		= platformX;
-		map->PlatformList[i].Rect.top		= platformY;
-		map->PlatformList[i].Rect.right		= platformX + platformWidth;
-		map->PlatformList[i].Rect.bottom	= platformY + platformHeight;
+		Platform_CreateRect(&map->PlatformList[i]);
 	}
 
 	for (int i = 0; i < MAX_TRAP_COUNT; i++)
 	{
-		Image_LoadImage(&map->TrapList[i].Image, "");				// Trap 이미지 로드 // csv 파싱 값
-		Image_LoadImage(&map->TrapList[i].Image2, "");				// Trap 바꿀 이미지 로드 // csv 파싱 값
+		// Trap 이미지 로드
+		Image_LoadImage(&map->TrapList[i].Platform.Image, "");		/// csv파싱 필요
+		// Trap 바꿀 이미지 로드 
+		Image_LoadImage(&map->TrapList[i].Image2, "");				/// csv파싱 필요
+		// Trap 오디오 로드
+		Audio_LoadSoundEffect(&map->TrapList[i].effectSound, "");	/// csv파싱 필요
 		
-		// 좌표 및 가로세로 폭 초기화 // csv 파싱 값
-		map->TrapList[i].Position.X = 0;
-		int32 trapX = map->TrapList[i].Position.X;
-
-		map->TrapList[i].Position.Y = 0;
-		int32 trapY = map->TrapList[i].Position.Y;
-
-		map->TrapList[i].Width = 0;
-		int32 trapWidth = map->TrapList[i].Width;
-
-		map->TrapList[i].Height = 0;
-		int32 trapHeight = map->TrapList[i].Height;
+		// 좌표 및 가로세로 폭 초기화									/// csv파싱 필요
+		map->TrapList[i].Platform.Position.X = 0;
+		map->TrapList[i].Platform.Position.Y = 0;
+		map->TrapList[i].Platform.Width = 0;
+		map->TrapList[i].Platform.Height = 0;
 
 		// Trap Rect 구성
-		map->TrapList[i].Rect.left			= trapX;
-		map->TrapList[i].Rect.top			= trapY;
-		map->TrapList[i].Rect.right			= trapX + trapWidth;
-		map->TrapList[i].Rect.bottom		= trapY + trapHeight;
+		Platform_CreateRect(&map->TrapList[i].Platform);
 
-		map->TrapList[i].Type = TRAP_BASIC;							// Trap 타입 초기화 // csv 파싱 값
+		map->TrapList[i].Type = TRAP_BASIC;	// Trap 타입 초기화		/// csv파싱 필요
 
-		map->TrapList[i].Active = true;							// Trap 활성화 초기화 // csv 파싱 값
-		map->TrapList[i].ActiveTime = 0.0f;							// Trap 이벤트 시간 초기화 // csv 파싱 값
+		map->TrapList[i].Active = true;		// Trap 활성화 초기화	/// csv파싱 필요
+		map->TrapList[i].ActiveTime = 0.0f;	// Trap 델타타임 초기화	/// csv파싱 필요
 
-		map->TrapList[i].TargetPosition.X = 0;							// Trap 타겟 위치 X 초기화 // 직선 or 플레이어 위치
-		map->TrapList[i].TargetPosition.Y = 0;							// Trap 타겟 위치 Y 초기화 // 직선 or 플레이어 위치
+		map->TrapList[i].TargetPosition.X = 0;	// Trap 타겟 위치 X 초기화 // 직선 or 플레이어 위치
+		map->TrapList[i].TargetPosition.Y = 0;	// Trap 타겟 위치 Y 초기화 // 직선 or 플레이어 위치
 
-		map->TrapList[i].ImageAlpha = 255;							// ImageAlpha 초기화 // csv 파싱 값
-
-		Audio_LoadSoundEffect(&map->TrapList[i].effectSound, "");	// Trap 오디오 로드 // csv 파싱 값
-		Image_LoadImage(&map->TrapList[i].Image2, "");				// Trap 변경용 이미지 로드 // csv 파싱 값
+		map->TrapList[i].ImageAlpha = 255;	// ImageAlpha 초기화		/// 변경 시 csv파싱 여부 확인 요
 	}
 
 	for (int i = 0; i < MAX_SAVE_POINT_COUNT; i++)
 	{
-		Image_LoadImage(&map->SavePointList[i].Platform.Image, "");			// SavePoint 이미지 로드 // csv 파싱 값
+		// SavePoint 이미지 로드
+		Image_LoadImage(&map->SavePointList[i].Platform.Image, "");	/// csv파싱 필요
 
-		// 좌표 및 가로세로 폭 초기화 // csv 파싱 값
+		// 좌표 및 가로세로 폭 초기화									/// csv파싱 필요
 		map->SavePointList[i].Platform.Position.X = 0;
-		int32 platformX = map->SavePointList[i].Platform.Position.X;
-
 		map->SavePointList[i].Platform.Position.Y = 0;
-		int32 platformY = map->SavePointList[i].Platform.Position.Y;
-
 		map->SavePointList[i].Platform.Width = 0;
-		int32 platformWidth = map->SavePointList[i].Platform.Width;
-
 		map->SavePointList[i].Platform.Height = 0;
-		int32 platformHeight = map->SavePointList[i].Platform.Height;
 
 		// Platform Rect 구성
-		map->SavePointList[i].Platform.Rect.left = platformX;
-		map->SavePointList[i].Platform.Rect.top = platformY;
-		map->SavePointList[i].Platform.Rect.right = platformX + platformWidth;
-		map->SavePointList[i].Platform.Rect.bottom = platformY + platformHeight;
+		Platform_CreateRect(&map->SavePointList[i].Platform);
 
-		map->SavePointList[i].Active = false;		//SavePoint 활성도 초기화
+		map->SavePointList[i].Active = false;			//SavePoint 활성도 초기화
+	}
+
+	for (int i = 0; i < MAX_SWITCH_COUNT; i++)
+	{
+		//Image_LoadImage(&map->SwitchList[i].Platform.Image, "");			// Switch 이미지 로드 // csv 파싱 값 // 필요없을 거라 예상
+
+		// 좌표 및 가로세로 폭 초기화									/// csv파싱 필요
+		map->SwitchList[i].Platform.Position.X = 0;
+		map->SwitchList[i].Platform.Position.Y = 0;
+		map->SwitchList[i].Platform.Width = 0;
+		map->SwitchList[i].Platform.Height = 0;
+
+		// Platform Rect 구성
+		Platform_CreateRect(&map->SwitchList[i].Platform);
+
+		map->SwitchList[i].Active = false;				//SavePoint 활성도 초기화
+
+		map->SwitchList[i].Event = NULL;
 	}
 }
 
@@ -121,7 +116,7 @@ void Map_Update(Map* map, Player* player)	// player 정보도 들어가는 것이 맞나..?
 
 	for (int32 i = 0; i < MAX_PLATFORM_COUNT; i++)
 	{
-		switch (map->PlatformList[i].Move)
+		switch (map->PlatformList[i].MoveState)
 		{
 		case 0:
 			break;
@@ -138,7 +133,7 @@ void Map_Update(Map* map, Player* player)	// player 정보도 들어가는 것이 맞나..?
 
 	for (int32 i = 0; i < MAX_TRAP_COUNT; i++)
 	{
-		Trap_TrapMove(&map->TrapList[i], player, x, y);		//x, y는 csv로 파싱
+		Trap_TrapMove(&map->TrapList[i], player, x, y);				/// csv파싱 필요
 		Trap_TrapSwitch(&map->TrapList[i]);
 	}
 
@@ -151,7 +146,7 @@ void Map_Update(Map* map, Player* player)	// player 정보도 들어가는 것이 맞나..?
 
 	for (int32 i = 0; i < MAX_PLATFORM_COUNT; i++)
 	{
-		bool IsGround;										//나중에 Player와 연결
+		bool IsGround;									//나중에 Player와 연결
 		IsGround = Platform_DetectIsGround(&map->PlatformList[i], player);
 	}
 
@@ -170,12 +165,17 @@ void Map_Render(Map* map)
 	{
 		if (map->TrapList[i].Active)
 		{
-			Renderer_DrawImage(&map->TrapList[i].Image, &map->TrapList[i].Position.X, &map->TrapList[i].Position.Y);
+			Renderer_DrawImage(&map->TrapList[i].Platform.Image, &map->TrapList[i].Platform.Position.X, &map->TrapList[i].Platform.Position.Y);
 		}
 		else if (!map->TrapList[i].Active)
 		{
-			Renderer_DrawImage(&map->TrapList[i].Image2, &map->TrapList[i].Position.X, &map->TrapList[i].Position.Y);
+			Renderer_DrawImage(&map->TrapList[i].Image2, &map->TrapList[i].Platform.Position.X, &map->TrapList[i].Platform.Position.Y);
 		}
+	}
+
+	for (int i = 0; i < MAX_SAVE_POINT_COUNT; i++)
+	{
+		Renderer_DrawImage(&map->SavePointList[i].Platform.Image, &map->SavePointList[i].Platform.Position.X, &map->SavePointList[i].Platform.Position.Y);
 	}
 }
 
@@ -192,8 +192,13 @@ void Map_Release(Map* map)
 
 	for (int i = 0; i < MAX_TRAP_COUNT; i++)
 	{
-		Image_FreeImage(&map->TrapList[i].Image);
+		Image_FreeImage(&map->TrapList[i].Platform.Image);
 		Audio_FreeSoundEffect(&map->TrapList[i].effectSound);
+	}
+
+	for (int i = 0; i < MAX_SAVE_POINT_COUNT; i++)
+	{
+		Image_FreeImage(&map->SavePointList[i].Platform.Image);
 	}
 }
 
@@ -214,20 +219,28 @@ bool Platform_DetectIsGround(Platform* platform, Player* player)
 	
 }
 
+void Platform_CreateRect(Platform* platform)
+{
+	platform->Rect.left = platform->Position.X;
+	platform->Rect.top = platform->Position.Y;
+	platform->Rect.right = platform->Position.X + platform->Width;
+	platform->Rect.bottom = platform->Position.Y + platform->Height;
+}
+
 void Platform_PlatformHorizontalMove(Map* map, Platform* platform)
 {
 	if (map->ActiveTime >= PLATFORM_MOVE_CYCLE)
 	{
-		if (!platform->Direction)
+		if (!platform->DirectionForCycle)
 		{
 			platform->Position.X += PLATFORM_MOVE_SPEED;
 		}
-		else if (platform->Direction)
+		else if (platform->DirectionForCycle)
 		{
 			platform->Position.X -= PLATFORM_MOVE_SPEED;
 		}
 		map->ActiveTime = 0.0f;
-		platform->Direction = !platform->Direction;
+		platform->DirectionForCycle = !platform->DirectionForCycle;
 	}
 }
 
@@ -235,16 +248,16 @@ void Platform_PlatformVerticalMove(Map* map, Platform* platform)
 {
 	if (map->ActiveTime >= PLATFORM_MOVE_CYCLE)
 	{
-		if (!platform->Direction)
+		if (!platform->DirectionForCycle)
 		{
 			platform->Position.Y += PLATFORM_MOVE_SPEED;
 		}
-		else if (platform->Direction)
+		else if (platform->DirectionForCycle)
 		{
 			platform->Position.Y -= PLATFORM_MOVE_SPEED;
 		}
 		map->ActiveTime = 0.0f;
-		platform->Direction = !platform->Direction;
+		platform->DirectionForCycle = !platform->DirectionForCycle;
 	}
 }
 

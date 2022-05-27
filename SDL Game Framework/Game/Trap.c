@@ -8,8 +8,8 @@ void Trap_TrapMove(Trap* trap, Player* player, int32 x, int32 y)
 
 		if (trap->Active) // 발동 조건
 		{
-			int32 trapX = trap->Position.X;
-			int32 trapY = trap->Position.Y;
+			int32 trapX = trap->Platform.Position.X;
+			int32 trapY = trap->Platform.Position.Y;
 			int32 targetX = trap->TargetPosition.X;
 			int32 targetY = trap->TargetPosition.Y;
 
@@ -19,22 +19,22 @@ void Trap_TrapMove(Trap* trap, Player* player, int32 x, int32 y)
 				{
 					if (trapX - trap->Speed > targetX)
 					{
-						trap->Position.X -= trap->Speed;
+						trap->Platform.Position.X -= trap->Speed;
 					}
 					else
 					{
-						trap->Position.X = targetX;
+						trap->Platform.Position.X = targetX;
 					}
 				}
 				else if (trapX < targetX)
 				{
 					if (trapX + trap->Speed < targetX)
 					{
-						trap->Position.X += trap->Speed;
+						trap->Platform.Position.X += trap->Speed;
 					}
 					else
 					{
-						trap->Position.X = targetX;
+						trap->Platform.Position.X = targetX;
 					}
 				}
 
@@ -42,22 +42,22 @@ void Trap_TrapMove(Trap* trap, Player* player, int32 x, int32 y)
 				{
 					if (trapY - trap->Speed > targetY)
 					{
-						trap->Position.Y -= trap->Speed;
+						trap->Platform.Position.Y -= trap->Speed;
 					}
 					else
 					{
-						trap->Position.Y = targetY;
+						trap->Platform.Position.Y = targetY;
 					}
 				}
 				else if (trapY < targetY)
 				{
 					if (trapY + trap->Speed < targetY)
 					{
-						trap->Position.Y += trap->Speed;
+						trap->Platform.Position.Y += trap->Speed;
 					}
 					else
 					{
-						trap->Position.Y = targetY;
+						trap->Platform.Position.Y = targetY;
 					}
 				}
 				trap->ActiveTime = 0.0f;
@@ -74,7 +74,7 @@ void Trap_GetTargetPosition(Trap* trap, Player* player, int32 x, int32 y)
 	}
 	else if (trap->Type == TRAP_BASIC || trap->Type == TRAP_SWITCH)
 	{
-		trap->TargetPosition = trap->Position;
+		trap->TargetPosition = trap->Platform.Position;
 	}
 	else if (trap->Type == TRAP_FLYING)
 	{

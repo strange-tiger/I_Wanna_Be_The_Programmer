@@ -19,11 +19,7 @@ enum Trap_Type {
 typedef struct tagTrap
 {
 	//기본
-	Image		Image;			//함정 이미지
-	Position	Position;		//함정 위치
-	int32		Width;			//함정 이미지의 가로 값
-	int32		Height;			//함정 이미지의 세로 값
-	RECT		Rect;			//함정 충돌 처리 범위
+	Platform	Platform;		//함정도 플랫폼의 한 종류
 
 	//효과
 	enum Trap_Type	Type;		//함정 타입
