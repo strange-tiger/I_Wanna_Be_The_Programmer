@@ -79,7 +79,8 @@ void Trap_InitializeTargetPosition(Trap* trap, int32 x, int32 y)
 	}
 	else
 	{
-		trap->TargetPosition = trap->Platform.Position;
+		trap->TargetPosition.X = trap->Platform.Position.X;
+		trap->TargetPosition.Y = trap->Platform.Position.Y;
 	}
 }
 
@@ -87,7 +88,8 @@ void Trap_GetTrackTargetPosition(Trap* trap, Player* player)
 {
 	if (trap->Type == TRAP_TRACK)
 	{
-		trap->TargetPosition = player->Position;
+		trap->TargetPosition.X = player->position.X;
+		trap->TargetPosition.Y = player->position.Y;
 	}
 
 	/*return trap->TargetPosition;*/

@@ -276,7 +276,8 @@ void Map_DetectSavePoint(Map* map, Player* player)
 			{
 				map->SavePointList[i].Active = !map->SavePointList[i].Active;
 
-				map->RespawnPoint = map->SavePointList[i].Platform.Position;
+				map->RespawnPoint.X = map->SavePointList[i].Platform.Position.X;
+				map->RespawnPoint.Y = map->SavePointList[i].Platform.Position.Y;
 			}
 		}
 	}

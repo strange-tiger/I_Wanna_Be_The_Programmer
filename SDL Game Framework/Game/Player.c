@@ -115,7 +115,7 @@ void Player_Move(Player* player, Map* map)
 		player->direction = PLAYER_LEFT;
 
 		//이동 연산
-		player->addPosition.X = -PLAYER_WALK_SPEED * Timer_GetDeltaTime();
+		player->addPosition.X = -PLAYER_WALK_SPEED * Timer_GetDeltaTime();	// ?
 	}
 
 	if (Input_GetKey(VK_RIGHT))
@@ -125,7 +125,7 @@ void Player_Move(Player* player, Map* map)
 		player->direction = PLAYER_RIGHT;
 
 		//이동 연산
-		player->addPosition.X += PLAYER_WALK_SPEED * Timer_GetDeltaTime();
+		player->addPosition.X = PLAYER_WALK_SPEED * Timer_GetDeltaTime();	// ?
 	}
 
 	//이동 한 만큼 좌표 값 이동
@@ -141,10 +141,20 @@ void Player_Move(Player* player, Map* map)
 //
 void Player_Jump(Player* player, Map* map)
 {
-	//점프 처리 (점프 키를 누른 시간 만큼 올라가고, 때면 떨어진다.)
+	//점프 처리 (점프 키를 누른 시간 만큼 올라가고, 때면 떨어진다.)	// ?
 	if (Input_GetKey(VK_SPACE))
 	{
+		//이동 연산
+		player->addPosition.X = PLAYER_JUMP_SPEED * Timer_GetDeltaTime();	// ?
 
+		player->position.X += player->addPosition.X;
+	}
+	else
+	{
+		if (Player_IsMovable(player, map))		// 낙하할 수 있는 상황 (밑에 플랫폼 없음) 이면	  // ?
+		{
+			player->position.X -= PLAYER_JUMP_SPEED * Timer_GetDeltaTime();		// 점프 속도와 같은 속도로 낙하 // ?
+		}
 	}
 
 }
@@ -154,7 +164,7 @@ bool Player_IsMovable(Player* player, Map* map)
 {
 	for (int32 i = 0; i < MAX_PLATFORM_COUNT; i++) 
 	{
-		if (Platform_DetectIsGround(&map->PlatformList[i], player))
+		if (Platform_GetIsGround(&map->PlatformList[i], player))	// 수정 // ?
 		{
 			return false;
 		}
@@ -166,11 +176,11 @@ bool Player_IsMovable(Player* player, Map* map)
 //완
 bool Player_IsHitTrap(Player* player, Map* map)
 {
+	RECT tempRect;
+
 	for (int32 i = 0; i < MAX_TRAP_COUNT; i++)
 	{
-		if (player->Rect.left <= map->TrapList[i].Platform.Rect.right &&
-			player->Rect.right >= map->TrapList[i].Platform.Rect.left &&
-			player->Rect.bottom <= map->TrapList[i].Platform.Rect.top)
+		if (IntersectRect(&tempRect, &player->Rect, &map->TrapList[i].Platform.Rect))	// 수정
 		{
 			return true;
 		}
@@ -193,7 +203,7 @@ void Player_StayStill(Player* player)
 		}
 	}
 
-	player->state = PLAYER_MOVE;
+	player->state = PLAYER_MOVE;	// ?
 }
 
 //완

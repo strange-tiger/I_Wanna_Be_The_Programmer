@@ -14,4 +14,8 @@ typedef uint16_t		uint16;
 typedef uint32_t		uint32;
 typedef uint64_t		uint64;
 
-typedef COORD			Position;
+//위치 좌표 값
+typedef struct tagPosition {
+	int32 X;	//위치 좌표 x
+	int32 Y;	//위치 좌표 y
+} Position;
