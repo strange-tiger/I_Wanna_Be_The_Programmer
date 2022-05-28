@@ -1,10 +1,13 @@
-#pragma once
+ï»¿#pragma once
 
-#include "Type.h"
+#include "stdafx.h"
 #include "Framework.h"
-#include "Common.h"
+#include "Player.h"
+#include "Map.h"
 
-//ÇÔÁ¤ Á¾·ù
+#define TRAP_SWITCH_CYCLE 1.0f
+
+//í•¨ì • ì¢…ë¥˜
 enum Trap_Type {
 	TRAP_BASIC,
 	TRAP_FLYING,
@@ -12,27 +15,48 @@ enum Trap_Type {
 	TRAP_SWITCH
 };
 
-//ÇÔÁ¤ ½ºÆ®·°Æ®(ÃßÈÄ ¼öÁ¤/Ãß°¡ ¿¹Á¤)
+//í•¨ì • ìŠ¤íŠ¸ëŸ­íŠ¸(ì¶”í›„ ìˆ˜ì •/ì¶”ê°€ ì˜ˆì •)
 typedef struct tagTrap
 {
-	//±âº»
-	Image		TrapImage;		//ÇÔÁ¤ ÀÌ¹ÌÁö
-	Position	TrapPosition;	//ÇÔÁ¤ À§Ä¡
-	int32		Width;		//ÇÔÁ¤ ÀÌ¹ÌÁöÀÇ °¡·Î °ª
-	int32		Height;		//ÇÔÁ¤ ÀÌ¹ÌÁöÀÇ ¼¼·Î °ª
+	//ê¸°ë³¸
+	Platform	Platform;		//í•¨ì •ë„ í”Œë«í¼ì˜ í•œ ì¢…ë¥˜
 
-	//È¿°ú
-	enum Trap_Type	Type;	//ÇÔÁ¤ Å¸ÀÔ
-	
-	//³¯¾Æ¿À´Â/ÃßÀû ÇÔÁ¤¿¡¼­ ¾²ÀÏ ¸ñÇ¥ ÁöÁ¡
-	Position	TargetPosition;	//¸ñÇ¥ ÁöÁ¡ ÁÂÇ¥°ª
+	//íš¨ê³¼
+	enum Trap_Type	Type;		//í•¨ì • íƒ€ì…
+	bool		Active;
+	float		ActiveTime;
+	int32		Speed;
 
-	//½ºÀ§Äª ÇÔÁ¤¿ë
-	int32		ImageAlpha;		//Åõ¸íÈ­
-	Image		Image2;			//(ÆÄ¶û/»¡°­) ¹Ù²Ü ÀÌ¹ÌÁö
 
-	//È¿°úÀ½
-	SoundEffect	effectSound;	//³¯¾Æ¿À´Â µîÀÇ È¿°ú¿¡¼­ ³ª¿À´Â È¿°úÀ½
+	//ë‚ ì•„ì˜¤ëŠ”/ì¶”ì  í•¨ì •ì—ì„œ ì“°ì¼ ëª©í‘œ ì§€ì 
+	Position	TargetPosition;	//ëª©í‘œ ì§€ì  ì¢Œí‘œê°’
+
+	//ìŠ¤ìœ„ì¹­ í•¨ì •ìš©
+	int32		ImageAlpha;		//íˆ¬ëª…í™”
+	Image		Image2;			//(íŒŒë‘/ë¹¨ê°•) ë°”ê¿€ ì´ë¯¸ì§€
+
+	//íš¨ê³¼ìŒ
+	SoundEffect	effectSound;	//ë‚ ì•„ì˜¤ëŠ” ë“±ì˜ íš¨ê³¼ì—ì„œ ë‚˜ì˜¤ëŠ” íš¨ê³¼ìŒ
 } Trap;
 
-//####Ãß°¡ ÇÔ¼ö
+//####ì¶”ê°€ í•¨ìˆ˜
+
+/// <summary>
+/// í•¨ì •ì„ TargetPositionê¹Œì§€ ì›€ì§ì¸ë‹¤.
+/// </summary>
+void Trap_TrapMove(Trap* trap, Player* player);
+
+/// <summary>
+/// í•¨ì •ì˜ ëª©í‘œë¬¼ì˜ ìœ„ì¹˜ TargetPosition ê°’ì„ ì´ˆê¸°í™”í•œë‹¤.
+/// </summary>
+void Trap_InitializeTargetPosition(Trap* trap, int32 x, int32 y);
+
+/// <summary>
+/// ìœ ë„ í•¨ì •ì˜ ëª©í‘œë¬¼ì˜ ìœ„ì¹˜ TargetPosition ê°’ì„ ë°›ëŠ”ë‹¤.
+/// </summary>
+void Trap_GetTrackTargetPosition(Trap* trap, Player* player);
+
+/// <summary>
+/// ìŠ¤ìœ„ì¹˜ í•¨ì •ì„ ì£¼ê¸°ì— ë”°ë¼ ê¹œë°•ì¸ë‹¤.
+/// </summary>
+void Trap_TrapSwitch(Trap* trap);

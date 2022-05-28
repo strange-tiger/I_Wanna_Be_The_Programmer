@@ -1,38 +1,75 @@
 #pragma once
 
-#include "Type.h"
+#include "stdafx.h"
 #include "Framework.h"
+#include "Player.h"
 #include "Trap.h"
 
 //최대 플랫폼 개수
 #define MAX_PLATFORM_COUNT 3
 #define MAX_TRAP_COUNT 1
+#define MAX_SAVE_POINT_COUNT 1
+#define MAX_SWITCH_COUNT 1
+
+#define PLATFORM_MOVE_SPEED 1
+#define PLATFORM_MOVE_CYCLE 3.0f
 
 //플랫폼 스트럭트(추후 수정/추가 예정)
-typedef struct tagPlatform 
+typedef struct tagPlatform
 {
 	//기본 연산
-	Image		Image;		//플랫폼 이미지 
-	Position	Position;	//플랫폼 위치
-	int32		Width;		//플랫폼 이미지의 가로 값
-	int32		Height;		//플랫폼 이미지의 세로 값
+	Image		Image;				//플랫폼 이미지 
+	Position	Position;			//플랫폼 위치
+	int32		Width;				//플랫폼 이미지의 가로 값
+	int32		Height;				//플랫폼 이미지의 세로 값
+	RECT		Rect;				//플랫폼 충돌 처리 범위
 
+	bool		DirectionForCycle;		//플랫폼 이동 주기 마다의 방향
+	int32		MoveState;				//플랫폼이 움직이는가 : 0: 아니오 1: 가로 2: 세로
 } Platform;
 
-//기본적인 맵에 대한 스트럭트(추후 수정/추가 예정)
-typedef struct tagMap 
+typedef struct tagSavePoint
 {
+	Platform	Platform;			//플랫폼의 일종
+	bool		Active;				//플레이어가 세이브 포인트를 지났는가/활성화했는가
+} SavePoint;
+
+typedef struct tagSwitch
+{
+	Platform	Platform;			//플랫폼의 일종
+	bool		Active;				//플레이어가 스위치를 지났는가/활성화했는가
+	void(*Event);					//스위치에 연결된 이벤트
+} Switch;
+
+//기본적인 맵에 대한 스트럭트(추후 수정/추가 예정)
+typedef struct tagMap
+{
+	//ID
+	int32		ID;					//식별 수
 
 	//배경
-	Image	BackGroundImage;	//배경화면
-	Music	BGM;				//배경 음악
-	Music	DieBGM;				//죽었을 때 음악
+	Image		BackGroundImage;	//배경화면
+	Music		BGM;				//배경 음악
+	Music		DieBGM;				//죽었을 때 음악
 
 	//맵(플랫폼)
 	Platform	PlatformList[MAX_PLATFORM_COUNT];
+	//맵(함정)
 	Trap		TrapList[MAX_TRAP_COUNT];
+	//세이브 포인트 (좌표/활성화 여부)
+	SavePoint	SavePointList[MAX_SAVE_POINT_COUNT];
+	//스위치 (좌표/활성화 여부)
+	Switch		SwitchList[MAX_SWITCH_COUNT];
+	
+	Position	StartPoint;			//시작 좌표
+	Position	DestinationPoint;	//목적 좌표
+	Switch		Radder;				//목적 지점에서의 사다리 이벤트/애니메이션
 
+	Position	RespawnPoint;		//리스폰 지점 좌표
+
+	float		ActiveTime;			//이벤트 델타타임 적용
 } Map;
+
 
 //####기본 함수
 void Map_Init(Map* map);
@@ -44,3 +81,56 @@ void Map_Render(Map* map);
 void Map_Release(Map* map);
 
 //####추가 함수
+
+/// <summary>
+/// 플랫폼의 위에 Player가 있는지 판별한다.
+/// </summary>
+/// <returns>
+/// 플레이어가 플랫폼 좌우로 걸치는 범위 안, 플랫폼 바로 위에 있다면 true, 아니면 false
+/// </returns>
+bool Platform_GetIsGround(Platform* platform, Player* player);
+
+/// <summary>
+/// 플랫폼의 위에 Player가 있는지 판별하고 전달한다.
+/// </summary>
+void Platform_SetIsGround(Platform* platform, Player* player);
+
+/// <summary>
+/// 플랫폼의 렉트를 구성한다.
+/// </summary>
+void Platform_CreateRect(Platform* platform);
+
+/// <summary>
+/// 플랫폼을 주기에 따라 가로로 반복하여 움직인다.
+/// </summary>
+void Platform_PlatformHorizontalMove(Map* map, Platform* platform);
+
+/// <summary>
+/// 플랫폼을 주기에 따라 세로로 반복하여 움직인다.
+/// </summary>
+void Platform_PlatformVerticalMove(Map* map, Platform* platform);
+
+/// <summary>
+/// 맵의 모든 플랫폼을 주기에 따라 움직인다.
+/// </summary>
+void Map_PlatformMove(Map* map);
+
+/// <summary>
+/// 맵의 세이브 포인트를 검사한다.
+/// </summary>
+void Map_DetectSavePoint(Map* map, Player* player);
+
+/// <summary>
+/// 맵의 함정을 주기에 따라 작동시킨다.
+/// </summary>
+void Map_TrapActivate(Map* map, Player* player);
+
+/// <summary>
+/// 맵의 모든 플랫폼 위에 플레이어가 있는지 판별한다.
+/// </summary>
+void Map_PlatformIsGround(Map* map, Player* player);
+
+/// <summary>
+/// 맵을 업데이트 한다. 플레이어와 연관이 있는 정보를 업데이트한다.
+/// </summary>
+void Map_UpdateWithPlayer(Map* map, Player* player);
