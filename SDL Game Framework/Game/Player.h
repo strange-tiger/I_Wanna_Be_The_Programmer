@@ -64,7 +64,7 @@ typedef struct Player
 } Player;
 
 //#### 기본 함수
-void Player_Init(Player* player, SoundEffect* deathEffectSound);
+void Player_Init(Player* player); // , SoundEffect* deathEffectSound);
 
 void Player_Update(Player* player, struct Map* map);
 

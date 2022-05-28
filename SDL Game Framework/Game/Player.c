@@ -5,7 +5,7 @@
 #include "Map.h"
 
 //#### 기본 함수
-void Player_Init(Player* player, SoundEffect* dieSound) 
+void Player_Init(Player* player) // , SoundEffect* dieSound) << SE는 바로 넣어줘도 되지 않을까 합니다.
 {
 	//범위
 	player->Rect.left = player->position.X;
@@ -26,7 +26,9 @@ void Player_Init(Player* player, SoundEffect* dieSound)
 	player->elapsedTime = 0.0f;
 
 	//효과음
-	player->dieSound = dieSound;
+	// player->dieSound = dieSound;
+	Audio_LoadSoundEffect(&player->dieSound,"");
+	Audio_SetEffectVolume(&player->dieSound, 1.0f); // SE 크기 설정이 필요하면 변수로 받으면 될 듯 합니다.
 
 	//에니메이션
 	Animation_Init(&player->animation);
@@ -211,6 +213,7 @@ void Player_Die(Player* player)
 {
 	player->isPlayerDie = true;
 	player->state = PLAYER_DIE;
+	Audio_PlaySoundEffect(&player->dieSound, 0);
 }
 
 //완

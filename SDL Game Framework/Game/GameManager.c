@@ -3,7 +3,7 @@
 
 FILE* savefp;
 
-void init_GameManager(GameManager* gdata)
+void GameManager_Init(GameManager* gdata)
 {
 	if (savefp = fopen("saveData.bin", "rb"))
 	{
@@ -26,31 +26,41 @@ void init_GameManager(GameManager* gdata)
 		// 세이브 파일 생성
 		SaveData(gdata);
 	}
+	
+	// csv데이터 세팅
+	CsvFile csvFile = { 0 }; // TODO : Csv.h의 MAXIMUM_ROW 수정
+	CreateCsvFile(&csvFile, "CsvTest.csv"); // TODO : csv 파일이름 수정
+
+	// Game 세팅
+	Player_Init(&gdata->player);
+	Map_Init(&gdata->map);
 }
 
-void update_GameManager(GameManager* gdata)
+void GameManager_Update(GameManager* gdata)
 {
-
+	Player_Update(&gdata->player, &gdata->map);
+	Map_Update(&gdata->map);
 }
 
-void render_GameManager(GameManager* gdata)
+void GameManager_Render(GameManager* gdata)
 {
-
+	Player_Render(&gdata->player);
+	Map_Render(&gdata->map);
 }
 
-void release_GameManager(GameManager* gdata)
+void GameManager_Release(GameManager* gdata)
 {
-
+	Player_Release(&gdata->player);
+	Map_Release(&gdata->map);
 }
 
 void SaveData(GameManager* gdata)
 {
 	savefp = fopen("saveData.bin", "wb");
 
-	gdata->pData.mapSaveID = 3; // 맵 아이디 나중에 추가되면
-	gdata->pData.playerSavePos.X = 10; // gdata->Player.position.Y
-	gdata->pData.playerSavePos.Y = 20; // gdata->Player.position.Y
-	gdata->pData.youDieCount = 99; // Player.c -> Player_Die()에서 카운트
+	gdata->pData.mapSaveID = gdata->map.ID;
+	gdata->pData.playerSavePos.X = gdata->map.RespawnPoint.X;
+	gdata->pData.playerSavePos.Y = gdata->map.RespawnPoint.Y;
 
 	fwrite(&gdata->pData, sizeof(gdata->pData), 1, savefp);
 	fclose(savefp);

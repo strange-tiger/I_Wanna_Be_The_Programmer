@@ -28,10 +28,6 @@ void init_title(void)
 	memset(g_Scene.Data, 0, sizeof(TitleSceneData));
 
 	TitleSceneData* data = (TitleSceneData*)g_Scene.Data;
-	
-	// 타이틀 csv데이터 가져온다.
-	CsvFile csvFile = { 0 }; // TODO : Csv.h의 MAXIMUM_ROW 수정
-	CreateCsvFile(&csvFile, "CsvTest.csv"); // TODO : csv 파일이름 수정
 
 	Text_CreateText(&data->mainText, "d2coding.ttf", 40,L"이거슨 타이틀", wcslen(L"이거슨 타이틀"));
 	Text_CreateText(&data->NextText, "d2coding.ttf", 40,L"Space 눌러 다음 씬으로", wcslen(L"Space 눌러 다음 씬으로"));
@@ -96,21 +92,21 @@ void init_main(void)
 
 	MainSceneData* data = (MainSceneData*)g_Scene.Data;
 
-	init_GameManager(&data->gData);
+	GameManager_Init(&data->gData);
 }
 
 void update_main(void)
 {
 	MainSceneData* data = (MainSceneData*)g_Scene.Data;
 	
-	update_GameManager(&data->gData);
+	GameManager_Update(&data->gData);
 }
 
 void render_main(void)
 {
 	MainSceneData* data = (MainSceneData*)g_Scene.Data;
 
-	render_GameManager(&data->gData);
+	GameManager_Render(&data->gData);
 
 }
 
@@ -118,7 +114,7 @@ void release_main(void)
 {
 	MainSceneData* data = (MainSceneData*)g_Scene.Data;
 
-	release_GameManager(&data->gData);
+	GameManager_Release(&data->gData);
 
 	SafeFree(g_Scene.Data);
 }
